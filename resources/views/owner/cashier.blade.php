@@ -288,6 +288,41 @@
     </div>
 
     <script>
+        function toggleDropdown(button) {
+          const dropdownMenus = document.querySelectorAll(".dropdown-menu");
+          const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
+      
+          // Close all dropdowns except the selected one
+          dropdownMenus.forEach((menu) => {
+            if (menu !== button.nextElementSibling) {
+              menu.classList.add("max-h-0");
+              menu.classList.remove("max-h-40");
+            }
+          });
+      
+          // Reset all arrows except the selected one
+          dropdownArrows.forEach((arrow) => {
+            if (arrow !== button.querySelector("i.bi-chevron-down")) {
+              arrow.classList.remove("rotate-180");
+            }
+          });
+      
+          // Toggle the selected dropdown
+          const dropdownMenu = button.nextElementSibling;
+          const dropdownArrow = button.querySelector("i.bi-chevron-down");
+      
+          if (dropdownMenu.classList.contains("max-h-0")) {
+            dropdownMenu.classList.remove("max-h-0");
+            dropdownMenu.classList.add("max-h-40");
+            dropdownArrow.classList.add("rotate-180");
+          } else {
+            dropdownMenu.classList.add("max-h-0");
+            dropdownMenu.classList.remove("max-h-40");
+            dropdownArrow.classList.remove("rotate-180");
+          }
+        }
+    </script>      
+    <script>
         // Set current date and cashier name when page loads
         window.onload = function() {
             const currentDate = new Date();
