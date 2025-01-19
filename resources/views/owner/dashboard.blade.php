@@ -11,9 +11,18 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
     />
+    {{-- Font Cdn --}}
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+      body{
+        font-family: 'Raleway', sans-serif;
+      }
+      #progressBar {
+        background-color: #005281;
+        transition: width 0.4s ease-in-out; /* Menambahkan transisi */
+      }
       .nav-text {
         position: relative;
         display: inline-block;
@@ -59,8 +68,8 @@
           <div class="bg-white p-4 mb-6 rounded-lg flex items-center shadow space-x-4">
             <i class="bi bi-person-circle text-4xl text-[#005281]"></i>
             <div>
-              <h2 class="text-2xl font-semibold text-gray-700">Halo {{ ucfirst(Auth::user()->name) }}, selamat datang!</h2>
-              <p class="text-gray-600">Ini adalah dashboard untuk melihat data real-time dan performa bisnis Anda. Silakan pilih rentang tanggal untuk melihat analisis lebih lanjut.</p>
+              <h2 class="text-2xl lg:text-xl font-semibold text-gray-700">Halo {{ ucfirst(Auth::user()->name) }}, Selamat Datang!</h2>
+              <p class="text-gray-600 text-small">Ini adalah dashboard untuk melihat data real-time dan performa bisnis Anda, Silakan pilih rentang tanggal untuk melihat analisis lebih lanjut.</p>
             </div>
           </div>
           <div>
@@ -119,6 +128,89 @@
             </div>
           </div>
 
+          <div class="flex space-x-4 mt-4">
+            <!-- Card 1: To-Do List -->
+            <div class="w-1/2 bg-white p-6 rounded-lg shadow">
+              <div class="flex flex-row mb-4">
+                <i class="bi bi-card-list mr-2"></i>
+                <h2 class="font-semibold text-gray-700 mb-2">To-Do List</h2>
+              </div>
+          
+              <hr class="w-full mb-2 border-t-2 border-gray-300" />
+              
+              <!-- List of Tasks -->
+              <ul class="space-y-2">
+                <li class="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="task1"
+                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded"
+                    onclick="updateProgress()"
+                  />
+                  <label for="task1" class="text-gray-700">Buka Toko Pukul 10:00 WIB</label>
+                </li>
+                <li class="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="task2"
+                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded"
+                    onclick="updateProgress()"
+                  />
+                  <label for="task2" class="text-gray-700">Bersih - Bersih / Prepare</label>
+                </li>
+                <li class="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="task3"
+                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded"
+                    onclick="updateProgress()"
+                  />
+                  <label for="task3" class="text-gray-700">Istirahat Jam Makan Siang</label>
+                </li>
+                <li class="flex items-center space-x-3">
+                  <input
+                    type="checkbox"
+                    id="task4"
+                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded"
+                    onclick="updateProgress()"
+                  />
+                  <label for="task4" class="text-gray-700">Tutup Pukul 10:00 WIB</label>
+                </li>
+              </ul>
+            </div>
+          
+            <!-- Card 2: Progress Bar -->
+            <div class="w-1/2 h-32 bg-white px-6 py-4 rounded-lg shadow">
+              <div class="mb-4">
+                <div class="flex flex-row">
+                  <i class="bi bi-clipboard-fill mr-2"></i>
+                <label class="block text-gray-700 mb-2 font-semibold">Progress</label>
+                </div>
+                <div class="relative pt-1">
+                  <div class="flex mb-2 items-center justify-between">
+                    <span class="text-sm font-semibold inline-block py-1 text-[#005281]">0%</span>
+                    <span class="text-sm font-semibold inline-block py-1 text-[#005281]">100%</span>
+                  </div>
+                  <div class="flex mb-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        id="progressBar"
+                        class="bg-[#005281] h-2.5 rounded-full"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>                    
+
+          <!-- Footer -->
+          <footer class="text-gray-400 text-center py-4 mt-8">
+            <p>Copyright &#169; 2024 Bblaratech3. All Rights Reserved.</p>
+          </footer>
+
         </div>
       </div>
 
@@ -157,6 +249,23 @@
           dropdownArrow.classList.remove("rotate-180");
         }
       }
+      </script>
+      <script>
+        function updateProgress() {
+          // Ambil semua checkbox
+          const tasks = document.querySelectorAll('.form-checkbox');
+          
+          // Hitung jumlah task yang sudah dicentang
+          const completedTasks = Array.from(tasks).filter(task => task.checked).length;
+          
+          // Hitung progress
+          const totalTasks = tasks.length;
+          const progress = (completedTasks / totalTasks) * 100;
+
+          // Update lebar progress bar
+          const progressBar = document.getElementById('progressBar');
+          progressBar.style.width = progress + '%';
+        }
       </script>
       <script>
         // Chart.js combo chart with pastel colors (Pink and Blue for bars, Bright Pastel Green for line)

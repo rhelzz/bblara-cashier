@@ -1,10 +1,10 @@
 <div
   id="sidebar"
-  class="fixed lg:sticky top-0 left-0 w-64 lg:w-1/6 bg-[#FCFCFC] h-screen flex flex-col transition-transform transform -translate-x-full lg:translate-x-0 text-[#000000] border-r-2 z-40"
+  class="fixed lg:sticky top-0 left-0 w-64 lg:w-1/6 bg-[#FCFCFC] h-screen flex flex-col transition-transform transform -translate-x-full lg:translate-x-0 text-[#000000] border-r-2 z-40 text-sm"
   >
   <!-- Sidebar Header -->
   <div class="flex items-center justify-between mb-4 p-4">
-    <img src="{{ asset('assets/logo-transparent.png') }}" alt="" class="w-auto h-40 mx-auto xl:h-40 lg:h-28">
+    <img src="{{ asset('assets/logo-transparent.png') }}" alt="" class="w-auto h-48 mx-auto xl:h-48 lg:h-36">
     <button
       class="lg:hidden text-gray-400 hover:text-gray-600"
       onclick="toggleSidebar()"
@@ -18,13 +18,13 @@
   <!-- Menu Items -->
   <div class="space-y-1 flex-1 p-4">
     <!-- Beranda -->
-    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+    <a href="{{ route('owner.dashboard.index') }}" class="flex items-center p-3 rounded-md bg-none transition hover-link">
       <i class="bi bi-house-door-fill"></i>
       <span class="ml-3 nav-text font-semibold">Beranda</span>
     </a>
 
     <!-- Kasir -->
-    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+    <a href="{{ route('owner.cashier.index') }}" class="flex items-center p-3 rounded-md bg-none transition hover-link">
       <i class="bi bi-basket"></i>
       <span class="ml-3 nav-text font-semibold">Kasir</span>
     </a>
