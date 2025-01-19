@@ -22,7 +22,7 @@
             position: relative;
             display: inline-block;
         }
-
+    
         .nav-text::after {
             content: '';
             position: absolute;
@@ -33,9 +33,81 @@
             background-color: #e17f12;
             transition: width 0.2s ease-in-out;
         }
-
+    
         .hover-link:hover .nav-text::after {
             width: 100%;
+        }
+    
+        /* Tambahkan CSS untuk print */
+        /* Update the print media query in your style section */
+        @media print {
+            /* Hide all elements initially */
+            body * {
+                visibility: hidden;
+            }
+            
+            /* Show only receipt section and its contents */
+            .receipt-section, 
+            .receipt-section * {
+                visibility: visible;
+            }
+            
+            /* Position receipt for full screen */
+            .receipt-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100vw !important; /* Force full viewport width */
+                height: 100vh !important; /* Force full viewport height */
+                padding: 20px;
+                margin: 0;
+                max-width: none !important; /* Remove max-width restriction */
+            }
+
+            /* Adjust content scaling for full screen */
+            .receipt-section {
+                font-size: 16px; /* Increase font size for better readability */
+                line-height: 1.5;
+            }
+
+            /* Center the content */
+            .receipt-section > div {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            /* Hide buttons when printing */
+            .receipt-section .button-group {
+                display: none !important;
+            }
+
+            /* Adjust spacing for items */
+            .receipt-section #item-list {
+                margin: 30px 0;
+                max-height: none !important; /* Remove scroll restrictions */
+            }
+
+            /* Enhance headers and totals visibility */
+            .receipt-section h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            /* Improve spacing between items */
+            .receipt-section .flex.flex-col {
+                margin-bottom: 20px;
+            }
+
+            /* Remove any background colors and shadows */
+            .receipt-section {
+                background: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Hide scrollbars */
+            .receipt-section::-webkit-scrollbar {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -181,7 +253,7 @@
         </section>
 
         <!-- Receipt Section -->
-        <section class="w-1/6 bg-white p-6 shadow rounded font-mono text-sm">
+        <section class="w-1/6 bg-white p-6 shadow rounded font-mono text-sm receipt-section">
             <div class="text-center mb-4">
                 <h1 class="text-xl font-bold">Receipt</h1>
                 <p class="text-xs text-gray-500" id="current-date"></p>
@@ -205,9 +277,11 @@
 
             <!-- Buttons -->
             <div class="text-center space-y-2">
-                <button onclick="processPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">Pay</button>
-                <button onclick="printReceipt()" class="w-full border border-gray-300 py-2 rounded hover:bg-gray-50 transition-colors">Print</button>
-                <button onclick="clearOrder()" class="w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors">Clear Order</button>
+                <div class="text-center space-y-2 button-group">
+                    <button onclick="processPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">Pay</button>
+                    <button onclick="printReceipt()" class="w-full border border-gray-300 py-2 rounded hover:bg-gray-50 transition-colors">Print</button>
+                    <button onclick="clearOrder()" class="w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors">Clear Order</button>
+                </div>
             </div>
         </section>
 

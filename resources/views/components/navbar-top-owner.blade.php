@@ -2,7 +2,7 @@
     <!-- Bagian Kiri: Dashboard Label -->
     <div class="flex items-center">
         <i class="fas fa-chart-bar text-gray-500 mr-2"></i>
-        <span class="text-gray-700 font-semibold">Dashboard</span>
+        <span class="text-gray-700 font-semibold">Navigation Bar</span>
     </div>
 
     <!-- Bagian Kanan: Profile dan Notifikasi -->
