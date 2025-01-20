@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Cashier - Bblara</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -142,9 +142,9 @@
                             <div class="p-4 bg-white rounded shadow">
                                 <label class="block font-medium text-gray-700 mb-2">Amount:</label>
                                 <div class="flex items-center justify-center space-x-2">
-                                    <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white font-bold" onclick="decrementAmount()">-</button>
-                                    <input type="text" name="amount" value="1" class="w-12 text-center border rounded h-12" readonly>
-                                    <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white" onclick="incrementAmount()">+</button>
+                                    <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white font-bold lg:h-10 lg:w-10 lg:text-sm" onclick="decrementAmount()">-</button>
+                                    <input type="text" name="amount" value="1" class="w-10 text-center border rounded h-12" readonly>
+                                    <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white lg:h-10 lg:w-10 lg:text-sm" onclick="incrementAmount()">+</button>
                                 </div>
                             </div>
                 
@@ -154,15 +154,15 @@
                                 <div class="flex items-center justify-center space-x-4">
                                     <div class="relative">
                                         <input type="radio" name="size" id="size-s" value="S" class="sr-only peer" onchange="updatePrice()" checked>
-                                        <label for="size-s" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">S</label>
+                                        <label for="size-s" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">S</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="size" id="size-m" value="M" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="size-m" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">M</label>
+                                        <label for="size-m" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">M</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="size" id="size-l" value="L" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="size-l" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">L</label>
+                                        <label for="size-l" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">L</label>
                                     </div>
                                 </div>
                             </div>
@@ -173,15 +173,15 @@
                                 <div class="flex items-center justify-center space-x-4">
                                     <div class="relative">
                                         <input type="radio" name="sugar" id="sugar-25" value="25" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="sugar-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">25%</label>
+                                        <label for="sugar-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="sugar" id="sugar-50" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                        <label for="sugar-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">50%</label>
+                                        <label for="sugar-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="sugar" id="sugar-75" value="75" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="sugar-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">75%</label>
+                                        <label for="sugar-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
                                     </div>
                                 </div>
                             </div>
@@ -192,15 +192,15 @@
                                 <div class="flex items-center justify-center space-x-4">
                                     <div class="relative">
                                         <input type="radio" name="ice" id="ice-25" value="25" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="ice-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">25%</label>
+                                        <label for="ice-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="ice" id="ice-50" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                        <label for="ice-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">50%</label>
+                                        <label for="ice-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
                                     </div>
                                     <div class="relative">
                                         <input type="radio" name="ice" id="ice-75" value="75" class="sr-only peer" onchange="updatePrice()">
-                                        <label for="ice-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50">75%</label>
+                                        <label for="ice-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
                                     </div>
                                 </div>
                             </div>
@@ -214,21 +214,21 @@
                                         <div class="relative">
                                             <input type="radio" name="topping" id="topping-none" value="No Topping" class="sr-only peer" onchange="updatePrice()" checked>
                                             <label for="topping-none" 
-                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center">
+                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                 No Topping
                                             </label>
                                         </div>
                                         <div class="relative">
                                             <input type="radio" name="topping" id="topping-oat" value="Susu Oat" class="sr-only peer" onchange="updatePrice()">
                                             <label for="topping-oat" 
-                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center">
+                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                 Susu Oat +(5K)
                                             </label>
                                         </div>
                                         <div class="relative">
                                             <input type="radio" name="topping" id="topping-espresso" value="Espresso" class="sr-only peer" onchange="updatePrice()">
                                             <label for="topping-espresso" 
-                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center">
+                                                class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                 Espresso +(4K)
                                             </label>
                                         </div>
@@ -236,12 +236,12 @@
                                 </div>
 
                                 <!-- Total Price and Add to Order Section -->
-                                <div class="p-4 bg-white rounded shadow flex flex-col justify-between">
+                                <div class="p-4 bg-white rounded shadow flex flex-col w-auto h-40">
                                     <div class="text-center">
                                         <label class="block font-medium text-gray-700 mb-2">Total Price:</label>
-                                        <span id="total-price" class="text-2xl font-bold text-[#e17f12] block">Rp. 45.000</span>
+                                        <span id="total-price" class="text-2xl font-bold text-[#e17f12] block mb-3 lg:text-base">Rp. 45.000</span>
                                     </div>
-                                    <button type="submit" class="w-full px-6 py-2 bg-[#005281] text-white rounded hover:bg-[#004371] transition-colors">
+                                    <button type="submit" class="w-full px-6 py-2 bg-[#005281] text-white rounded hover:bg-[#004371] transition-colors lg:text-sm">
                                         Add to Order
                                     </button>
                                 </div>
@@ -269,8 +269,8 @@
 
             <!-- SubTotal -->
             <div class="flex justify-between text-lg font-bold text-green-600">
-                <span>Subtotal</span>
-                <span id="subtotal">Rp. 0</span>
+                <span class="lg:text-xs">Subtotal</span>
+                <span id="subtotal" class="lg:text-xs">Rp. 0</span>
             </div>
 
             <hr class="border-dashed border-t-2 my-4">
@@ -416,14 +416,14 @@
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex justify-between">
-                            <span class="font-semibold">Macchiato Milk Tea x${amount}</span>
-                            <span class="font-semibold">${formatRupiah(totalPrice)}</span>
+                            <span class="font-semibold lg:text-xs">Macchiato Milk Tea x${amount}</span>
                         </div>
                         <ul class="ml-2 text-gray-600 text-xs mt-1">
                             <li>Size: ${size.value}</li>
                             <li>Sugar: ${sugar.value}%</li>
                             <li>Ice: ${ice.value}%</li>
                             <li>Topping: ${topping.value}</li>
+                            <li class="font-semibold lg:text-xs">Total: ${formatRupiah(totalPrice)}</li>
                         </ul>
                     </div>
                     <button type="button" onclick="removeItem(this)" class="ml-2 text-red-500 hover:text-red-700 text-xs">×</button>
@@ -455,11 +455,15 @@
         // Function to update the subtotal
         function updateSubtotal() {
             const itemList = document.getElementById('item-list');
-            const prices = itemList.querySelectorAll('.flex.justify-between span:nth-child(2)');
+            // Ubah selector untuk mengambil elemen yang berisi total harga
+            const prices = itemList.querySelectorAll('.text-xs.mt-1 li:last-child');
             let subtotal = 0;
 
             prices.forEach(price => {
-                subtotal += parseInt(price.textContent.replace(/[^\d]/g, ''));
+                // Mengambil angka dari teks "Total: Rp XX.XXX"
+                const priceText = price.textContent;
+                const priceNumber = parseInt(priceText.split(': ')[1].replace(/[^\d]/g, ''));
+                subtotal += priceNumber;
             });
 
             document.getElementById('subtotal').textContent = formatRupiah(subtotal);
