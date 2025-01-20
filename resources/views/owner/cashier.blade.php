@@ -133,7 +133,7 @@
                     <div class="flex gap-6">
                         <!-- Gambar -->
                         <figure class="w-1/3">
-                            <img src="https://placehold.co/300x300/png" alt="Macchiato Milk Tea" class="w-72 h-60 object-cover rounded">
+                            <img src="https://placehold.co/300x300/png" alt="Macchiato Milk Tea" class="w-auto h-60 object-cover rounded">
                         </figure>
                 
                         <!-- Kontrol -->

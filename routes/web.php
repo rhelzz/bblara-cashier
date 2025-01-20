@@ -3,6 +3,7 @@
 use App\Http\Controllers\Karyawan\DashboardKaryawanController;
 use App\Http\Controllers\Owner\CashierOwnerController;
 use App\Http\Controllers\Owner\DashboardOwnerController;
+use App\Http\Controllers\Owner\ProductOwnerController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,9 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('karyawan/dashboard', DashboardKaryawanController::class, [
-    'as' => 'karyawan'
-]);
+// Owner Route
 
 Route::resource('owner/dashboard', DashboardOwnerController::class, [
     'as' => 'owner'
@@ -30,6 +29,10 @@ Route::resource('owner/dashboard', DashboardOwnerController::class, [
 
 Route::resource('owner/cashier', CashierOwnerController::class, [
     'as' => 'owner'
+]);
+
+Route::resource('owner/product', ProductOwnerController::class, [
+    'as'=> 'owner'
 ]);
 
 require __DIR__.'/auth.php';

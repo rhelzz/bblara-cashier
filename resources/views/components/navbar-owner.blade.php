@@ -4,7 +4,7 @@
   >
   <!-- Sidebar Header -->
   <div class="flex items-center justify-between mb-4 p-4">
-    <img src="{{ asset('assets/logo-transparent.png') }}" alt="" class="w-auto h-48 mx-auto xl:h-48 lg:h-36">
+    <img src="{{ asset('assets/logo-transparent.png') }}" alt="" class="w-auto h-40 mx-auto xl:h-40 lg:h-36">
     <button
       class="lg:hidden text-gray-400 hover:text-gray-600"
       onclick="toggleSidebar()"
@@ -16,7 +16,7 @@
   <div class="w-full border-b-2 border-gray-300"></div>
 
   <!-- Menu Items -->
-  <div class="space-y-1 flex-1 p-4">
+  <div class=" flex-1 p-4">
     <!-- Beranda -->
     <a href="{{ route('owner.dashboard.index') }}" class="flex items-center p-3 rounded-md bg-none transition hover-link">
       <i class="bi bi-house-door-fill"></i>
@@ -62,14 +62,8 @@
         <i class="bi bi-chevron-down transition-transform"></i>
       </button>
       <div class="dropdown-menu space-y-2 overflow-hidden max-h-0 transition-all duration-300">
-        <a href="#" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
-          <span class="nav-text font-semibold">Tabel Produk</span>
-        </a>
-        <a href="#" class="block p-3 rounded-md bg-none transition hover-link">
-          <span class="nav-text font-semibold">Tambah Produk</span>
-        </a>
-        <a href="#" class="block p-3 rounded-md bg-none transition hover-link">
-          <span class="nav-text font-semibold">Edit Produk</span>
+        <a href="{{ route('owner.product.index') }}" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
+          <span class="nav-text font-semibold">Kelola Produk</span>
         </a>
       </div>
     </div>
@@ -87,16 +81,23 @@
       </button>
       <div class="dropdown-menu space-y-2 overflow-hidden max-h-0 transition-all duration-300">
         <a href="#" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
-          <span class="nav-text font-semibold">Tabel Stok</span>
-        </a>
-        <a href="#" class="block p-3 rounded-md bg-none transition hover-link">
-          <span class="nav-text font-semibold">Tambah Stok</span>
-        </a>
-        <a href="#" class="block p-3 rounded-md bg-none transition hover-link">
-          <span class="nav-text font-semibold">Edit Produk</span>
+          <span class="nav-text font-semibold">Kelola Stok</span>
         </a>
       </div>
     </div>
+
+    <!-- Laporan -->
+    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+      <i class="bi bi-file-earmark-fill"></i>
+      <span class="ml-3 nav-text font-semibold">Laporan</span>
+    </a>
+    
+    <!-- Laporan -->
+    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+      <i class="bi bi-person-fill"></i>
+      <span class="ml-3 nav-text font-semibold">User</span>
+    </a>
+
   </div>
 
   <!-- Logout -->
