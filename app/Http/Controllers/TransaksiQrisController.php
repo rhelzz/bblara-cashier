@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Owner;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\TransaksiQris;
 use Illuminate\Http\Request;
-use App\Models\Product;
 
-class CashierOwnerController extends Controller
+class TransaksiQrisController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        $products = Product::all();
-
-        return view("owner.cashier", compact("products"));
+        //
     }
 
     /**
@@ -32,7 +28,21 @@ class CashierOwnerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi data yang diterima dari request
+        $request->validate([
+            'subtotal' => 'required|numeric|min:0',
+            'total_cost_price' => 'required|numeric|min:0',
+            'name_user' => 'required|string|max:255',
+            'payment_method' => 'required|string|max:255',
+            'timestamp' => 'required|date',
+        ]);
+
+        // Buat dan simpan instance baru dari model TransaksiTunai
+        $transaksiTunai = TransaksiQris::create($request->all());
+
+        // Kembalikan respon yang sesuai
+        return redirect()->route('owner.cashier.index')
+            ->with('success', 'Transaksi tunai berhasil disimpan!');
     }
 
     /**

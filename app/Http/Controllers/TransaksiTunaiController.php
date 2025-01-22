@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Owner;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Models\TransaksiTunai;
 
-class CashierOwnerController extends Controller
+class TransaksiTunaiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        $products = Product::all();
-
-        return view("owner.cashier", compact("products"));
+        //
     }
 
     /**
@@ -32,7 +28,24 @@ class CashierOwnerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'subtotal' => 'required|numeric',
+            'total_cost_price' => 'required|numeric',
+            'name_user' => 'required|string',
+            'payment_method' => 'required|string|in:tunai',
+            'timestamp' => 'required|date_format:Y-m-d H:i:s'
+        ]);
+
+        // Buat transaksi baru
+        TransaksiTunai::create([
+            'subtotal' => $validated['subtotal'],
+            'total_cost_price' => $validated['total_cost_price'],
+            'name_user' => $validated['name_user'],
+            'payment_method' => $validated['payment_method'],
+            'timestamp' => $validated['timestamp']
+        ]);
+
+        return redirect()->back()->with('success', 'Transaction has been saved successfully!');
     }
 
     /**

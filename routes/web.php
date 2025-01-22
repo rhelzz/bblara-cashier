@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\Karyawan\DashboardKaryawanController;
-use App\Http\Controllers\Owner\CashierOwnerController;
-use App\Http\Controllers\Owner\DashboardOwnerController;
-use App\Http\Controllers\Owner\ProductOwnerController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TransaksiTunaiController;
+use App\Http\Controllers\Owner\CashierOwnerController;
+use App\Http\Controllers\Owner\ProductOwnerController;
+use App\Http\Controllers\Owner\DashboardOwnerController;
+use App\Http\Controllers\Karyawan\DashboardKaryawanController;
+use App\Http\Controllers\TransaksiQrisController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,5 +36,9 @@ Route::resource('owner/cashier', CashierOwnerController::class, [
 Route::resource('owner/product', ProductOwnerController::class, [
     'as'=> 'owner'
 ]);
+
+Route::post('/transaksitunai', [TransaksiTunaiController::class, 'store'])->name('transaksitunai.store');
+
+Route::resource('transaksiqris', TransaksiQrisController::class);
 
 require __DIR__.'/auth.php';
