@@ -130,7 +130,7 @@
             <form class="p-6" method="POST" action="#" onsubmit="addToOrder(event)" data-product-name="{{ $row->name }}" data-product-price="{{ $row->price }}" data-cost-price="{{ $row->cost_price }}">
                     <div class="w-full p-6 bg-white rounded shadow-lg">
                         <header class="mb-4">
-                            <h2 class="font-bold text-xl text-green-700">01. {{ $row->name }} (Rp {{ number_format($row->price, 0, ',', '.') }})</h2>
+                            <h2 class="font-bold text-xl text-green-700">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}. {{ $row->name }} (Rp {{ number_format($row->price, 0, ',', '.') }})</h2>
                         </header>
                     
                         <!-- Kontainer untuk gambar dan kontrol -->
