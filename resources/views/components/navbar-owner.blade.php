@@ -44,7 +44,7 @@
         <a href="{{ route('owner.transaksitunai.index') }}" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
           <span class="nav-text font-semibold">Transaksi Tunai</span>
         </a>
-        <a href="#" class="block p-3 rounded-md bg-none transition hover-link">
+        <a href="{{ route('owner.transaksiqris.index') }}" class="block p-3 rounded-md bg-none transition hover-link">
           <span class="nav-text font-semibold">Transaksi Qris</span>
         </a>
       </div>

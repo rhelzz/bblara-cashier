@@ -12,7 +12,8 @@ class TransaksiQrisController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = TransaksiQris::all();
+        return view('owner.transaksiqris.index', compact('transactions'));
     }
 
     /**
