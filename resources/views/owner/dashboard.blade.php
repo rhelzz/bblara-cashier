@@ -293,43 +293,64 @@
           fetch(`/api/dashboard-data?start=${startDate}&end=${endDate}`)
               .then(response => {
                   if (!response.ok) {
-                      return response.json().then(err => {
-                          throw new Error(err.message || 'Gagal mengambil data');
-                      });
+                      throw new Error(`HTTP error! status: ${response.status}`);
                   }
                   return response.json();
               })
               .then(data => {
-                  if (!data || typeof data !== 'object') {
-                      throw new Error('Data yang diterima tidak valid');
+                  if (!data) {
+                      throw new Error('Data kosong');
                   }
                   updateCards(data);
-                  updateChart(data.monthlyData);
+                  if (data.monthlyData) {
+                      updateChart(data.monthlyData);
+                  } else {
+                      console.warn('Monthly data not available');
+                  }
               })
               .catch(error => {
-                  console.error('Terjadi kesalahan:', error);
-                  alert(`Terjadi kesalahan: ${error.message}`);
+                  console.error('Error updating dashboard:', error);
+                  alert('Terjadi kesalahan saat memperbarui data. Silakan coba lagi.');
               });
       }
 
       function updateCards(data) {
-          // Update nilai
-          document.querySelector('#totalModal').textContent = 'Rp' + new Intl.NumberFormat('id-ID').format(data.todayModal);
-          document.querySelector('#totalPendapatan').textContent = 'Rp' + new Intl.NumberFormat('id-ID').format(data.todayPendapatan);
-          document.querySelector('#totalKeuntungan').textContent = 'Rp' + new Intl.NumberFormat('id-ID').format(data.todayKeuntungan);
+        // Guard clause to check if data exists and has required properties
+        if (!data) {
+            console.error('No data received');
+            return;
+        }
 
-          // Update persentase
-          updatePercentageChange('modalPercentage', data.modalPercentage, data.modalDiff);
-          updatePercentageChange('pendapatanPercentage', data.pendapatanPercentage, data.pendapatanDiff);
-          updatePercentageChange('keuntunganPercentage', data.keuntunganPercentage, data.keuntunganDiff);
+        // Update nilai with null checks
+        const formatCurrency = (value) => 'Rp' + new Intl.NumberFormat('id-ID').format(value || 0);
+
+        const totalModal = document.querySelector('#totalModal');
+        if (totalModal) totalModal.textContent = formatCurrency(data.todayModal);
+
+        const totalPendapatan = document.querySelector('#totalPendapatan');
+        if (totalPendapatan) totalPendapatan.textContent = formatCurrency(data.todayPendapatan);
+
+        const totalKeuntungan = document.querySelector('#totalKeuntungan');
+        if (totalKeuntungan) totalKeuntungan.textContent = formatCurrency(data.todayKeuntungan);
+
+        // Update persentase with null checks
+        updatePercentageChange('modalPercentage', data.modalPercentage, data.modalDiff);
+        updatePercentageChange('pendapatanPercentage', data.pendapatanPercentage, data.pendapatanDiff);
+        updatePercentageChange('keuntunganPercentage', data.keuntunganPercentage, data.keuntunganDiff);
       }
 
       // Helper function to update percentage changes
       function updatePercentageChange(elementId, percentage, difference) {
-        const element = document.querySelector(`#${elementId}`);
-        const isPositive = percentage >= 0;
-        element.className = `text-${isPositive ? 'green' : 'red'}-500 text-sm`;
-        element.textContent = `${percentage.toFixed(1)}% (${isPositive ? '+' : ''}Rp${new Intl.NumberFormat('id-ID').format(difference)}) dibanding kemarin`;
+          const element = document.querySelector(`#${elementId}`);
+          if (!element) return; // Guard clause if element not found
+
+          // Handle cases where percentage or difference might be undefined/null
+          const validPercentage = percentage || 0;
+          const validDifference = difference || 0;
+          const isPositive = validPercentage >= 0;
+
+          element.className = `text-${isPositive ? 'green' : 'red'}-500 text-sm`;
+          element.textContent = `${validPercentage.toFixed(1)}% (${isPositive ? '+' : ''}Rp${new Intl.NumberFormat('id-ID').format(validDifference)}) dibanding kemarin`;
       }
 
       // Helper function to update chart
