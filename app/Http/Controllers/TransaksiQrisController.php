@@ -28,21 +28,24 @@ class TransaksiQrisController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data yang diterima dari request
-        $request->validate([
-            'subtotal' => 'required|numeric|min:0',
-            'total_cost_price' => 'required|numeric|min:0',
-            'name_user' => 'required|string|max:255',
-            'payment_method' => 'required|string|max:255',
-            'timestamp' => 'required|date',
+        $validated = $request->validate([
+            'subtotal' => 'required|numeric',
+            'total_cost_price' => 'required|numeric',
+            'name_user' => 'required|string',
+            'payment_method' => 'required|string|in:qris',
+            'timestamp' => 'required|date_format:Y-m-d H:i:s'
         ]);
 
-        // Buat dan simpan instance baru dari model TransaksiTunai
-        $transaksiTunai = TransaksiQris::create($request->all());
+        // Create the transaction
+        TransaksiQris::create([
+            'subtotal' => $validated['subtotal'],
+            'total_cost_price' => $validated['total_cost_price'],
+            'name_user' => $validated['name_user'],
+            'payment_method' => $validated['payment_method'],
+            'timestamp' => $validated['timestamp']
+        ]);
 
-        // Kembalikan respon yang sesuai
-        return redirect()->route('owner.cashier.index')
-            ->with('success', 'Transaksi tunai berhasil disimpan!');
+        return redirect()->back()->with('success', 'Transaction has been saved successfully!');
     }
 
     /**

@@ -287,10 +287,21 @@
                 <input type="hidden" name="timestamp" id="transaction_timestamp">
             </form>
 
+            <!-- Add this after the existing transactionForm -->
+            <form id="transactionQRISForm" method="POST" action="{{ route('transaksiqris.store') }}" style="display: none;">
+                @csrf
+                <input type="hidden" name="subtotal" id="transaction_qris_subtotal">
+                <input type="hidden" name="total_cost_price" id="transaction_qris_total_cost_price">
+                <input type="hidden" name="name_user" id="transaction_qris_name_user" value="{{ ucfirst(Auth::user()->name) }}">
+                <input type="hidden" name="payment_method" id="transaction_qris_payment_method" value="qris">
+                <input type="hidden" name="timestamp" id="transaction_qris_timestamp">
+            </form>
+
             <!-- Buttons -->
             <div class="text-center space-y-2">
                 <div class="text-center space-y-2 button-group">
                     <button onclick="processPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors">Pay</button>
+                    <button onclick="processQRISPayment()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">Pay with QRIS</button>
                     <button onclick="printReceipt()" class="w-full border border-gray-300 py-2 rounded hover:bg-gray-50 transition-colors">Print</button>
                     <button onclick="clearOrder()" class="w-full border border-red-300 text-red-600 py-2 rounded hover:bg-red-50 transition-colors">Clear Order</button>
                 </div>
@@ -533,7 +544,7 @@
             document.getElementById('subtotal').textContent = formatRupiah(subtotal);
         }
 
-        // Updated processPayment function with SweetAlert2
+            // Updated processPayment function with SweetAlert2
             async function processPayment() {
                 const subtotalElement = document.getElementById('subtotal');
                 const subtotalText = subtotalElement.textContent;
@@ -659,6 +670,114 @@
                                 confirmButtonColor: '#e17f12'
                             });
                         }
+                    }
+                }
+            }
+
+            // Add this new function after the existing processPayment function
+            async function processQRISPayment() {
+                const subtotalElement = document.getElementById('subtotal');
+                const subtotalText = subtotalElement.textContent;
+                
+                if (subtotalText === 'Rp 0') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Empty Order',
+                        text: 'Please add items to your order before proceeding to payment',
+                        confirmButtonColor: '#e17f12'
+                    });
+                    return;
+                }
+
+                // Calculate total cost price
+                let totalCostPrice = 0;
+                const itemList = document.getElementById('item-list');
+                const items = itemList.querySelectorAll('.flex.flex-col');
+                
+                items.forEach(item => {
+                    const productName = item.querySelector('.font-semibold').textContent.split(' x')[0];
+                    const quantity = parseInt(item.querySelector('.font-semibold').textContent.split('x')[1]);
+                    const form = document.querySelector(`form[data-product-name="${productName}"]`);
+                    const baseCostPrice = parseFloat(form.getAttribute('data-cost-price'));
+                    
+                    let itemCostPrice = baseCostPrice;
+                    const size = item.querySelector('li:nth-child(1)').textContent.split(': ')[1];
+                    const topping = item.querySelector('li:nth-child(4)').textContent.split(': ')[1];
+
+                    if (size === 'L') {
+                        itemCostPrice += 1500;
+                    }
+                    if (topping === 'Susu Oat') {
+                        itemCostPrice += 2500;
+                    } else if (topping === 'Espresso') {
+                        itemCostPrice += 2000;
+                    }
+
+                    totalCostPrice += (itemCostPrice * quantity);
+                });
+
+                const now = new Date();
+                const timestamp = now.getUTCFullYear() + '-' + 
+                                String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
+                                String(now.getUTCDate()).padStart(2, '0') + ' ' + 
+                                String(now.getUTCHours()).padStart(2, '0') + ':' + 
+                                String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
+                                String(now.getUTCSeconds()).padStart(2, '0');
+
+                // Show QRIS payment confirmation dialog
+                const { isConfirmed } = await Swal.fire({
+                    title: 'Confirm QRIS Payment',
+                    text: `Confirm QRIS payment for ${subtotalText}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e17f12',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, process QRIS payment',
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (isConfirmed) {
+                    // Set form values for QRIS transaction
+                    const subtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
+                    document.getElementById('transaction_qris_subtotal').value = subtotal;
+                    document.getElementById('transaction_qris_total_cost_price').value = totalCostPrice.toFixed(2);
+                    document.getElementById('transaction_qris_timestamp').value = timestamp;
+
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing QRIS Payment',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Submit the QRIS form
+                    try {
+                        await document.getElementById('transactionQRISForm').submit();
+                        
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'QRIS Payment Successful',
+                            text: 'Your QRIS transaction has been processed successfully!',
+                            confirmButtonColor: '#e17f12'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Optional: Redirect or refresh page
+                                // window.location.reload();
+                            }
+                        });
+                    } catch (error) {
+                        // Show error message if something goes wrong
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'QRIS Payment Failed',
+                            text: 'There was an error processing your QRIS payment. Please try again.',
+                            confirmButtonColor: '#e17f12'
+                        });
                     }
                 }
             }
