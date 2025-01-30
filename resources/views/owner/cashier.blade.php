@@ -40,6 +40,40 @@
         .hover-link:hover .nav-text::after {
             width: 100%;
         }
+
+        /* Add this to your existing style tag */
+        .receipt-section {
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            width: 16.666667%; /* This is equivalent to w-1/6 */
+        }
+
+        /* Style the scrollbar for better appearance */
+        .receipt-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .receipt-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .receipt-section::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .receipt-section::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Adjust main content to account for fixed receipt section */
+        .main-content {
+            margin-right: 16.666667%; /* Same as receipt section width */
+        }
     
         /* Tambahkan CSS untuk print */
         /* Update the print media query in your style section */
@@ -116,14 +150,36 @@
 </head>
 <body>
 
-    <div class="flex">
+    <div class="flex relative">
 
         <!-- Navbar Owner -->
         <x-navbar-owner></x-navbar-owner>
 
         <!-- Main Content -->
-        <section class="w-4/6 bg-white shadow rounded">
+        <section class="w-4/6 bg-white shadow rounded main-content xl:w-4/6 lg:w-[62.5%]">
             <x-navbar-top-owner></x-navbar-top-owner>
+
+            <!-- Search Bar -->
+            <div class="p-4">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005281] focus:border-transparent"
+                        placeholder="Search product name..."
+                    >
+                    <div class="absolute top-2.5 left-3 text-gray-400">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <button 
+                        id="clearSearch" 
+                        class="absolute top-2.5 right-3 text-gray-400 hover:text-gray-600 hidden"
+                        onclick="clearSearchInput()"
+                    >
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
 
             <!-- Main content section -->
             @foreach ($products as $row)
@@ -255,7 +311,7 @@
         </section>
 
         <!-- Receipt Section -->
-        <section class="w-1/6 bg-white p-6 shadow rounded font-mono text-sm receipt-section">
+        <section class="w-1/6 bg-white p-6 shadow rounded font-mono text-sm receipt-section xl:w-1/6 lg:w-[20.83%]">
             <div class="text-center mb-4">
                 <h1 class="text-xl font-bold">Receipt</h1>
                 <p class="text-xs text-gray-500" id="current-date"></p>
@@ -278,7 +334,7 @@
             <hr class="border-dashed border-t-2 my-4">
 
             <!-- Hidden form for transaction -->
-            <form id="transactionForm" method="POST" action="{{ route('transaksitunai.store') }}" style="display: none;">
+            <form id="transactionForm" method="POST" action="{{ route('owner.transaksitunai.store') }}" style="display: none;">
                 @csrf
                 <input type="hidden" name="subtotal" id="transaction_subtotal">
                 <input type="hidden" name="total_cost_price" id="transaction_total_cost_price">
@@ -288,7 +344,7 @@
             </form>
 
             <!-- Add this after the existing transactionForm -->
-            <form id="transactionQRISForm" method="POST" action="{{ route('transaksiqris.store') }}" style="display: none;">
+            <form id="transactionQRISForm" method="POST" action="{{ route('owner.transaksiqris.store') }}" style="display: none;">
                 @csrf
                 <input type="hidden" name="subtotal" id="transaction_qris_subtotal">
                 <input type="hidden" name="total_cost_price" id="transaction_qris_total_cost_price">
@@ -356,7 +412,7 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
-            document.getElementById('cashier-name').textContent = 'Cashier: rhelzz';
+            document.getElementById('cashier-name').textContent = '{{ ucfirst(Auth::user()->name) }}';
             
             // Initialize price for all forms
             document.querySelectorAll('form').forEach(form => {
@@ -587,12 +643,12 @@
                 });
 
                 const now = new Date();
-                const timestamp = now.getUTCFullYear() + '-' + 
-                                String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
-                                String(now.getUTCDate()).padStart(2, '0') + ' ' + 
-                                String(now.getUTCHours()).padStart(2, '0') + ':' + 
-                                String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
-                                String(now.getUTCSeconds()).padStart(2, '0');
+                const timestamp = now.getFullYear() + '-' + 
+                                String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(now.getDate()).padStart(2, '0') + ' ' + 
+                                String(now.getHours()).padStart(2, '0') + ':' + 
+                                String(now.getMinutes()).padStart(2, '0') + ':' + 
+                                String(now.getSeconds()).padStart(2, '0');
 
                 // Show payment method selection dialog
                 const { value: paymentMethod } = await Swal.fire({
@@ -717,12 +773,12 @@
                 });
 
                 const now = new Date();
-                const timestamp = now.getUTCFullYear() + '-' + 
-                                String(now.getUTCMonth() + 1).padStart(2, '0') + '-' + 
-                                String(now.getUTCDate()).padStart(2, '0') + ' ' + 
-                                String(now.getUTCHours()).padStart(2, '0') + ':' + 
-                                String(now.getUTCMinutes()).padStart(2, '0') + ':' + 
-                                String(now.getUTCSeconds()).padStart(2, '0');
+                const timestamp = now.getFullYear() + '-' + 
+                                String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(now.getDate()).padStart(2, '0') + ' ' + 
+                                String(now.getHours()).padStart(2, '0') + ':' + 
+                                String(now.getMinutes()).padStart(2, '0') + ':' + 
+                                String(now.getSeconds()).padStart(2, '0');
 
                 // Show QRIS payment confirmation dialog
                 const { isConfirmed } = await Swal.fire({
@@ -810,6 +866,70 @@
             input.addEventListener('change', function() {
                 updatePrice.call(this.closest('form'));
             });
+        });
+
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const clearButton = document.getElementById('clearSearch');
+            const productForms = document.querySelectorAll('form[data-product-name]');
+
+            function filterProducts(searchTerm) {
+                searchTerm = searchTerm.toLowerCase().trim();
+                
+                productForms.forEach(form => {
+                    const productName = form.getAttribute('data-product-name').toLowerCase();
+                    const productCard = form.closest('.p-6');
+                    
+                    if (productName.includes(searchTerm)) {
+                        productCard.style.display = '';
+                        // Highlight matching text if there's a search term
+                        const titleElement = form.querySelector('h2');
+                        if (searchTerm !== '') {
+                            const regex = new RegExp(`(${searchTerm})`, 'gi');
+                            const originalText = titleElement.textContent;
+                            titleElement.innerHTML = originalText.replace(
+                                regex, 
+                                '<span class="bg-yellow-200">$1</span>'
+                            );
+                        } else {
+                            // Remove highlighting if search is cleared
+                            titleElement.innerHTML = titleElement.textContent;
+                        }
+                    } else {
+                        productCard.style.display = 'none';
+                    }
+                });
+            }
+
+            function clearSearchInput() {
+                searchInput.value = '';
+                clearButton.classList.add('hidden');
+                filterProducts('');
+                searchInput.focus();
+            }
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value;
+                filterProducts(searchTerm);
+                
+                // Toggle clear button visibility
+                if (searchTerm) {
+                    clearButton.classList.remove('hidden');
+                } else {
+                    clearButton.classList.add('hidden');
+                }
+            });
+
+            // Clear search when pressing Escape key
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    clearSearchInput();
+                }
+            });
+
+            // Make clearSearchInput function globally available
+            window.clearSearchInput = clearSearchInput;
         });
     </script>
 

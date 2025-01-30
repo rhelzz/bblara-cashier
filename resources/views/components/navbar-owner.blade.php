@@ -41,7 +41,7 @@
         <i class="bi bi-chevron-down transition-transform"></i>
       </button>
       <div class="dropdown-menu space-y-2 overflow-hidden max-h-0 transition-all duration-300">
-        <a href="#" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
+        <a href="{{ route('owner.transaksitunai.index') }}" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
           <span class="nav-text font-semibold">Transaksi Tunai</span>
         </a>
         <a href="#" class="block p-3 rounded-md bg-none transition hover-link">

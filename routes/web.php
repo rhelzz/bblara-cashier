@@ -37,8 +37,12 @@ Route::resource('owner/product', ProductOwnerController::class, [
     'as'=> 'owner'
 ]);
 
-Route::post('/transaksitunai', [TransaksiTunaiController::class, 'store'])->name('transaksitunai.store');
+Route::resource('owner/transaksitunai', TransaksiTunaiController::class, [
+    'as' => 'owner'
+]);
 
-Route::resource('transaksiqris', TransaksiQrisController::class);
+Route::resource('owner/transaksiqris', TransaksiQrisController::class, [
+    'as'=> 'owner'
+]);
 
 require __DIR__.'/auth.php';

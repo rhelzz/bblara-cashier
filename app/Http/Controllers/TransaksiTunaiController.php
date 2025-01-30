@@ -12,7 +12,8 @@ class TransaksiTunaiController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = TransaksiTunai::all();
+        return view('owner.transaksitunai.index', compact('transactions'));
     }
 
     /**
@@ -33,7 +34,7 @@ class TransaksiTunaiController extends Controller
             'total_cost_price' => 'required|numeric',
             'name_user' => 'required|string',
             'payment_method' => 'required|string|in:tunai',
-            'timestamp' => 'required|date_format:Y-m-d H:i:s'
+            'timestamp' => 'required'
         ]);
 
         // Buat transaksi baru
