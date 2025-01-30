@@ -45,4 +45,6 @@ Route::resource('owner/transaksiqris', TransaksiQrisController::class, [
     'as'=> 'owner'
 ]);
 
+Route::get('/dashboard-data', [DashboardOwnerController::class, 'getDataByDateRange']);
+
 require __DIR__.'/auth.php';

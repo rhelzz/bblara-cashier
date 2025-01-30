@@ -14,7 +14,6 @@
     {{-- Font Cdn --}}
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
     <style>
-      /* Your existing styles remain the same */
       body{
         font-family: 'Raleway', sans-serif;
       }
@@ -36,6 +35,22 @@
 
       .hover-link:hover .nav-text::after {
         width: 100%;
+      }
+
+      .bi-arrow-down-up {
+        transition: all 0.2s ease-in-out;
+      }
+
+      .bi-arrow-up, .bi-arrow-down {
+        color: #e17f12;
+      }
+
+      th[onclick] {
+        transition: background-color 0.2s ease-in-out;
+      }
+
+      th[onclick]:hover {
+        background-color: #f3f4f6;
       }
     </style>
   </head>
@@ -63,6 +78,10 @@
               <div class="max-w-7xl mx-auto">
                   <div class="flex justify-between items-center mb-6">
                       <h1 class="text-2xl font-semibold text-gray-900">Daftar Transaksi Tunai</h1>
+                      <div class="text-sm text-gray-600">
+                          <p>Current User: {{ Auth::user()->name ?? 'rhelzz' }}</p>
+                          <p>Date: <span id="currentDateTime">2025-01-30 04:55:24</span></p>
+                      </div>
                   </div>
           
                   @if(session('success'))
@@ -72,28 +91,48 @@
                   @endif
           
                   <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="overflow-x-auto">
                       <table class="min-w-full divide-y divide-gray-200">
-                          <thead class="bg-gray-50">
-                              <tr>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Pengguna</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Modal</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode Pembayaran</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Transaksi</th>
-                              </tr>
-                          </thead>
-                          <tbody class="bg-white divide-y divide-gray-200">
-                              @foreach($transactions as $transaction)
-                                  <tr>
-                                      <td class="px-6 py-4 whitespace-nowrap">{{ $transaction->name_user }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaction->subtotal, 0, ',', '.') }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaction->total_cost_price, 0, ',', '.') }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($transaction->payment_method) }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">{{ $transaction->timestamp }}</td>
-                                  </tr>
-                              @endforeach
-                          </tbody>
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Pengguna</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Modal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metode Pembayaran</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer group" onclick="sortTable()">
+                                    <div class="flex items-center">
+                                        Waktu Transaksi
+                                        <span id="sort-icon" class="ml-2">
+                                            <i class="bi bi-arrow-down-up"></i>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($transactions as $transaction)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $transaction->id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $transaction->name_user }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaction->subtotal, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transaction->total_cost_price, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ ucfirst($transaction->payment_method) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $transaction->timestamp }}</td>
+                                </tr>
+                            @endforeach
+                            <!-- Total Row -->
+                            <tr class="bg-gray-50 font-semibold">
+                                <td class="px-6 py-4 whitespace-nowrap"></td>
+                                <td class="px-6 py-4 whitespace-nowrap">Total</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transactions->sum('subtotal'), 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($transactions->sum('total_cost_price'), 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap"></td>
+                                <td class="px-6 py-4 whitespace-nowrap"></td>
+                            </tr>
+                        </tbody>
                       </table>
+                    </div>
                   </div>
               </div>
           </div>
@@ -102,7 +141,28 @@
 
       <!-- Scripts -->
       <script>
-        // Your existing JavaScript remains the same
+        // Update current date time
+        function updateDateTime() {
+            const now = new Date();
+            const formattedDateTime = now.getFullYear() + '-' + 
+                                  String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                                  String(now.getDate()).padStart(2, '0') + ' ' + 
+                                  String(now.getHours()).padStart(2, '0') + ':' + 
+                                  String(now.getMinutes()).padStart(2, '0') + ':' + 
+                                  String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('currentDateTime').textContent = formattedDateTime;
+        }
+
+        // Update time every second
+        setInterval(updateDateTime, 1000);
+
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+          const sidebar = document.querySelector('.sidebar');
+          sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Dropdown Toggle Function
         function toggleDropdown(button) {
           const dropdownMenus = document.querySelectorAll(".dropdown-menu");
           const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
@@ -133,6 +193,64 @@
             dropdownArrow.classList.remove("rotate-180");
           }
         }
+
+        // Table Sorting Function
+        let isAscending = true;
+
+        function sortTable() {
+            const table = document.querySelector('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => !row.classList.contains('bg-gray-50'));
+            const sortIcon = document.getElementById('sort-icon');
+
+            // Update sort icon
+            sortIcon.innerHTML = isAscending ? 
+                '<i class="bi bi-arrow-up text-orange-500"></i>' : 
+                '<i class="bi bi-arrow-down text-orange-500"></i>';
+
+            // Sort the rows
+            rows.sort((a, b) => {
+                // Get timestamp and ID for comparison
+                const timeA = new Date(a.cells[5].textContent.trim());
+                const timeB = new Date(b.cells[5].textContent.trim());
+                const idA = parseInt(a.cells[0].textContent.trim());
+                const idB = parseInt(b.cells[0].textContent.trim());
+                
+                // First compare by timestamp
+                if (timeA.getTime() !== timeB.getTime()) {
+                    return isAscending ? timeA - timeB : timeB - timeA;
+                }
+                
+                // If timestamps are equal, sort by ID
+                return isAscending ? idA - idB : idB - idA;
+            });
+
+            // Remove existing rows (except total row)
+            rows.forEach(row => row.remove());
+
+            // Add sorted rows back
+            const totalRow = tbody.querySelector('.bg-gray-50');
+            rows.forEach(row => tbody.insertBefore(row, totalRow));
+
+            // Toggle sort direction for next click
+            isAscending = !isAscending;
+
+            // Save sort preference to localStorage
+            localStorage.setItem('transactionTableSort', isAscending ? 'asc' : 'desc');
+        }
+
+        // Initialize sorting preference from localStorage and sort by newest first by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedSort = localStorage.getItem('transactionTableSort');
+            if (savedSort) {
+                isAscending = savedSort === 'asc';
+            } else {
+                // Set default to sort by newest first
+                isAscending = false;
+            }
+            sortTable(); // Apply initial sort
+            updateDateTime(); // Initialize datetime
+        });
       </script>
     </body>
 </html>
