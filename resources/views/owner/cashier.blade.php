@@ -403,7 +403,7 @@
     </script>      
     <script>
         // Set current date and cashier name when page loads
-        window.onload = function() {
+        document.addEventListener('DOMContentLoaded', function() {
             const currentDate = new Date();
             document.getElementById('current-date').textContent = currentDate.toLocaleString('en-US', {
                 year: 'numeric',
@@ -415,10 +415,10 @@
             document.getElementById('cashier-name').textContent = '{{ ucfirst(Auth::user()->name) }}';
             
             // Initialize price for all forms
-            document.querySelectorAll('form').forEach(form => {
+            document.querySelectorAll('form[data-product-price]').forEach(form => {
                 updatePrice.call(form);
             });
-        };
+        });
 
         // Function to toggle dropdown
         function toggleDropdown(button) {
@@ -490,6 +490,10 @@
             const size = form.querySelector('input[name="size"]:checked');
             const topping = form.querySelector('input[name="topping"]:checked');
 
+            // Add console.log for debugging
+            console.log('Base Price:', basePrice);
+            console.log('Form:', form);
+
             let itemPrice = basePrice;
             let customizations = [];
 
@@ -511,7 +515,9 @@
             const totalPrice = itemPrice * amount;
 
             const totalPriceElement = form.querySelector('#total-price');
-            totalPriceElement.textContent = formatRupiah(totalPrice);
+            if (totalPriceElement) {
+                totalPriceElement.textContent = formatRupiah(totalPrice);
+            }
             
             form.setAttribute('data-base-price', basePrice);
             form.setAttribute('data-item-price', itemPrice);
@@ -600,7 +606,7 @@
             document.getElementById('subtotal').textContent = formatRupiah(subtotal);
         }
 
-            // Updated processPayment function with SweetAlert2
+            // Updated processPayment function without payment method selection
             async function processPayment() {
                 const subtotalElement = document.getElementById('subtotal');
                 const subtotalText = subtotalElement.textContent;
@@ -650,82 +656,61 @@
                                 String(now.getMinutes()).padStart(2, '0') + ':' + 
                                 String(now.getSeconds()).padStart(2, '0');
 
-                // Show payment method selection dialog
-                const { value: paymentMethod } = await Swal.fire({
-                    title: 'Select Payment Method',
-                    input: 'select',
-                    inputOptions: {
-                        'tunai': 'Tunai'
-                    },
-                    inputPlaceholder: 'Select payment method',
+                // Show confirmation dialog
+                const { isConfirmed } = await Swal.fire({
+                    title: 'Confirm Payment',
+                    text: `Confirm payment for ${subtotalText}?`,
+                    icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: 'Proceed',
                     confirmButtonColor: '#e17f12',
-                    cancelButtonText: 'Cancel',
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'Please select a payment method';
-                        }
-                    }
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, process payment',
+                    cancelButtonText: 'Cancel'
                 });
 
-                if (paymentMethod) {
-                    // Show confirmation dialog
-                    const { isConfirmed } = await Swal.fire({
-                        title: 'Confirm Payment',
-                        text: `Confirm payment for ${subtotalText} via ${paymentMethod}?`,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#e17f12',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, process payment',
-                        cancelButtonText: 'Cancel'
+                if (isConfirmed) {
+                    // Set form values
+                    const subtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
+                    document.getElementById('transaction_subtotal').value = subtotal;
+                    document.getElementById('transaction_total_cost_price').value = totalCostPrice.toFixed(2);
+                    document.getElementById('transaction_timestamp').value = timestamp;
+                    document.getElementById('transaction_payment_method').value = 'tunai'; // Set default payment method to tunai
+
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Processing Payment',
+                        text: 'Please wait...',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        willOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
 
-                    if (isConfirmed) {
-                        // Set form values
-                        const subtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
-                        document.getElementById('transaction_subtotal').value = subtotal;
-                        document.getElementById('transaction_total_cost_price').value = totalCostPrice.toFixed(2);
-                        document.getElementById('transaction_timestamp').value = timestamp;
-                        document.getElementById('transaction_payment_method').value = paymentMethod;
-
-                        // Show loading state
+                    // Submit the form
+                    try {
+                        await document.getElementById('transactionForm').submit();
+                        
+                        // Show success message
                         Swal.fire({
-                            title: 'Processing Payment',
-                            text: 'Please wait...',
-                            allowOutsideClick: false,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
+                            icon: 'success',
+                            title: 'Payment Successful',
+                            text: 'Your transaction has been processed successfully!',
+                            confirmButtonColor: '#e17f12'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Optional: Redirect or refresh page
+                                // window.location.reload();
                             }
                         });
-
-                        // Submit the form
-                        try {
-                            await document.getElementById('transactionForm').submit();
-                            
-                            // Show success message
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Payment Successful',
-                                text: 'Your transaction has been processed successfully!',
-                                confirmButtonColor: '#e17f12'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Optional: Redirect or refresh page
-                                    // window.location.reload();
-                                }
-                            });
-                        } catch (error) {
-                            // Show error message if something goes wrong
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Payment Failed',
-                                text: 'There was an error processing your payment. Please try again.',
-                                confirmButtonColor: '#e17f12'
-                            });
-                        }
+                    } catch (error) {
+                        // Show error message if something goes wrong
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Payment Failed',
+                            text: 'There was an error processing your payment. Please try again.',
+                            confirmButtonColor: '#e17f12'
+                        });
                     }
                 }
             }
