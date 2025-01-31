@@ -80,7 +80,7 @@
         <i class="bi bi-chevron-down transition-transform"></i>
       </button>
       <div class="dropdown-menu space-y-2 overflow-hidden max-h-0 transition-all duration-300">
-        <a href="#" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
+        <a href="{{ route('owner.stock.index') }}" class="block p-3 rounded-md bg-none transition mt-2 hover-link">
           <span class="nav-text font-semibold">Kelola Stok</span>
         </a>
       </div>
@@ -101,8 +101,11 @@
   </div>
 
   <!-- Logout -->
-  <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link mt-auto mx-4 mb-4">
-    <i class="bi bi-box-arrow-right"></i>
-    <span class="ml-3 nav-text font-semibold">Logout</span>
-  </a>
+  <form action="{{ route('logout') }}" method="POST" class="flex items-center p-3 rounded-md bg-none transition hover-link mt-auto mx-4 mb-4">
+    @csrf
+    <button type="submit" class="flex items-center">
+        <i class="bi bi-box-arrow-right"></i>
+        <span class="ml-3 nav-text font-semibold">Logout</span>
+    </button>
+  </form>
 </div>

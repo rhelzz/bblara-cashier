@@ -7,6 +7,7 @@ use App\Http\Controllers\Owner\CashierOwnerController;
 use App\Http\Controllers\Owner\ProductOwnerController;
 use App\Http\Controllers\Owner\DashboardOwnerController;
 use App\Http\Controllers\Karyawan\DashboardKaryawanController;
+use App\Http\Controllers\Owner\StockOwnerController;
 use App\Http\Controllers\TransaksiQrisController;
 
 Route::get('/', function () {
@@ -44,5 +45,13 @@ Route::resource('owner/transaksitunai', TransaksiTunaiController::class, [
 Route::resource('owner/transaksiqris', TransaksiQrisController::class, [
     'as'=> 'owner'
 ]);
+
+Route::resource('owner/stock', StockOwnerController::class, [
+    'as'=> 'owner'
+]);
+
+Route::patch('owner/stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('owner.stock.increment');
+
+Route::patch('owner/stock/decrement/{id}', [StockOwnerController::class, 'decrementQty'])->name('owner.stock.decrement');
 
 require __DIR__.'/auth.php';
