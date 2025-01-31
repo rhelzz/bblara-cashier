@@ -51,8 +51,17 @@ class DashboardOwnerController extends Controller
 
     public function getDataByDateRange(Request $request)
     {
-        $startDate = Carbon::parse($request->input('start'))->startOfDay();
-        $endDate = Carbon::parse($request->input('end'))->endOfDay();
+        $startDate = null;
+        $endDate = null;
+
+        if ($request->has('preset')) {
+            $dates = $this->getPresetDates($request->preset);
+            $startDate = Carbon::parse($dates['start'])->startOfDay();
+            $endDate = Carbon::parse($dates['end'])->endOfDay();
+        } else {
+            $startDate = Carbon::parse($request->input('start'))->startOfDay();
+            $endDate = Carbon::parse($request->input('end'))->endOfDay();
+        }
 
         $rangeQris = TransaksiQris::whereBetween('timestamp', [$startDate, $endDate])->get();
         $rangeTunai = TransaksiTunai::whereBetween('timestamp', [$startDate, $endDate])->get();
@@ -61,10 +70,14 @@ class DashboardOwnerController extends Controller
         $rangePendapatan = $rangeQris->sum('subtotal') + $rangeTunai->sum('subtotal');
         $rangeKeuntungan = $rangePendapatan - $rangeModal;
 
+        // Get monthly data with the new comparison logic
+        $monthlyData = $this->getMonthlyData($startDate, $endDate, $rangeModal, $rangePendapatan, $rangeKeuntungan);
+
         return response()->json([
             'todayModal' => $rangeModal,
             'todayPendapatan' => $rangePendapatan,
             'todayKeuntungan' => $rangeKeuntungan,
+            'monthlyData' => $monthlyData
         ]);
     }
 
@@ -139,6 +152,49 @@ class DashboardOwnerController extends Controller
         }
 
         return $monthlyData;
+    }
+
+    private function getPresetDates($preset)
+    {
+        $now = Carbon::now();
+        
+        switch ($preset) {
+            case 'today':
+                return [
+                    'start' => $now->format('Y-m-d'),
+                    'end' => $now->format('Y-m-d')
+                ];
+            case 'yesterday':
+                return [
+                    'start' => $now->copy()->subDay()->format('Y-m-d'),
+                    'end' => $now->copy()->subDay()->format('Y-m-d')
+                ];
+            case 'last7days':
+                return [
+                    'start' => $now->copy()->subDays(6)->format('Y-m-d'),
+                    'end' => $now->format('Y-m-d')
+                ];
+            case 'last30days':
+                return [
+                    'start' => $now->copy()->subDays(29)->format('Y-m-d'),
+                    'end' => $now->format('Y-m-d')
+                ];
+            case 'thisMonth':
+                return [
+                    'start' => $now->copy()->startOfMonth()->format('Y-m-d'),
+                    'end' => $now->copy()->endOfMonth()->format('Y-m-d')
+                ];
+            case 'lastMonth':
+                return [
+                    'start' => $now->copy()->subMonth()->startOfMonth()->format('Y-m-d'),
+                    'end' => $now->copy()->subMonth()->endOfMonth()->format('Y-m-d')
+                ];
+            default:
+                return [
+                    'start' => $now->format('Y-m-d'),
+                    'end' => $now->format('Y-m-d')
+                ];
+        }
     }
 
     /**
