@@ -92,8 +92,8 @@
       <span class="ml-3 nav-text font-semibold">Laporan</span>
     </a>
     
-    <!-- Laporan -->
-    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+    <!-- User -->
+    <a href="{{ route('owner.user.index') }}" class="flex items-center p-3 rounded-md bg-none transition hover-link">
       <i class="bi bi-person-fill"></i>
       <span class="ml-3 nav-text font-semibold">User</span>
     </a>

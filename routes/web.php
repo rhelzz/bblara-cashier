@@ -8,6 +8,7 @@ use App\Http\Controllers\Owner\ProductOwnerController;
 use App\Http\Controllers\Owner\DashboardOwnerController;
 use App\Http\Controllers\Karyawan\DashboardKaryawanController;
 use App\Http\Controllers\Owner\StockOwnerController;
+use App\Http\Controllers\Owner\UserOwnerController;
 use App\Http\Controllers\TransaksiQrisController;
 
 Route::get('/', function () {
@@ -48,6 +49,10 @@ Route::resource('owner/transaksiqris', TransaksiQrisController::class, [
 
 Route::resource('owner/stock', StockOwnerController::class, [
     'as'=> 'owner'
+]);
+
+Route::resource('owner/user', UserOwnerController::class, [
+    'as' => 'owner'
 ]);
 
 Route::patch('owner/stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('owner.stock.increment');
