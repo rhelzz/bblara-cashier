@@ -58,9 +58,9 @@
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bahan Baku</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berat</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Berat</th> <!-- New header -->
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubah Qty</th>
                                     </tr>
@@ -70,9 +70,9 @@
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $stock->id }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $stock->raw_material }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight . ' ' . $stock->unit }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap">{{ $stock->qty }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->unit }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight * $stock->qty . ' ' . $stock->unit }}</td> <!-- New column for Total Berat -->
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex space-x-2">
                                                     <a href="{{ route('owner.stock.show', $stock) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">

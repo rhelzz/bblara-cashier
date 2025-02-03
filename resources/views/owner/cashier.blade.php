@@ -17,6 +17,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- jQuery (diperlukan untuk Toastr) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <style>
         body {
             font-family: 'Raleway', sans-serif;
@@ -313,7 +319,7 @@
         <!-- Receipt Section -->
         <section class="w-1/6 bg-white p-6 shadow rounded font-mono text-sm receipt-section xl:w-1/6 lg:w-[20.83%]">
             <div class="text-center mb-4">
-                <h1 class="text-xl font-bold">Receipt</h1>
+                <h1 class="text-xl font-bold">Struk Pesanan</h1>
                 <p class="text-xs text-gray-500" id="current-date"></p>
                 <p class="text-xs text-gray-500" id="cashier-name"></p>
             </div>
@@ -715,7 +721,6 @@
                 }
             }
 
-            // Add this new function after the existing processPayment function
             async function processQRISPayment() {
                 const subtotalElement = document.getElementById('subtotal');
                 const subtotalText = subtotalElement.textContent;
@@ -727,6 +732,30 @@
                         text: 'Please add items to your order before proceeding to payment',
                         confirmButtonColor: '#e17f12'
                     });
+                    return;
+                }
+
+                // Show QRIS code first
+                const { isConfirmed: scanConfirmed } = await Swal.fire({
+                    title: 'Scan QRIS Code',
+                    html: `
+                        <div class="flex flex-col items-center">
+                            <img src="{{ asset('assets/qris-bblara.png') }}" 
+                                alt="QRIS Code" 
+                                class="w-64 h-64 object-contain mb-4">
+                            <p class="text-sm text-gray-600">Please scan the QRIS code above to make your payment</p>
+                            <p class="font-bold mt-2">Total: ${subtotalText}</p>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'I have completed the payment',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#e17f12',
+                    cancelButtonColor: '#d33',
+                    width: 'auto'
+                });
+
+                if (!scanConfirmed) {
                     return;
                 }
 
@@ -765,15 +794,15 @@
                                 String(now.getMinutes()).padStart(2, '0') + ':' + 
                                 String(now.getSeconds()).padStart(2, '0');
 
-                // Show QRIS payment confirmation dialog
+                // Show final confirmation dialog
                 const { isConfirmed } = await Swal.fire({
                     title: 'Confirm QRIS Payment',
-                    text: `Confirm QRIS payment for ${subtotalText}?`,
+                    text: `Confirm that you have completed the QRIS payment for ${subtotalText}?`,
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#e17f12',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, process QRIS payment',
+                    confirmButtonText: 'Yes, payment completed',
                     cancelButtonText: 'Cancel'
                 });
 
@@ -916,6 +945,57 @@
             // Make clearSearchInput function globally available
             window.clearSearchInput = clearSearchInput;
         });
+    </script>
+    <script>
+        // Konfigurasi default Toastr
+        document.addEventListener('DOMContentLoaded', function() {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+        });
+
+        // Function to clear order with Toastr
+        function clearOrder() {
+            const itemList = document.getElementById('item-list');
+            if (itemList.children.length === 0) {
+                toastr.warning('Order is already empty!', 'Warning');
+                return;
+            }
+
+            // Show confirmation using SweetAlert2
+            Swal.fire({
+                title: 'Clear Order?',
+                text: 'Are you sure you want to clear the entire order?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e17f12',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, clear it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    itemList.innerHTML = '';
+                    updateSubtotal();
+                    
+                    // Show success message with Toastr
+                    toastr.success('Order has been cleared successfully!', 'Success');
+                }
+            });
+        }
     </script>
 
 </body>

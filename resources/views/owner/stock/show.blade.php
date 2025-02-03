@@ -60,11 +60,7 @@
                                 </div>
                                 <div>
                                     <h3 class="text-sm font-medium text-gray-500">Berat</h3>
-                                    <p class="mt-1 text-lg text-gray-900">{{ $stock->weight }}</p>
-                                </div>
-                                <div>
-                                    <h3 class="text-sm font-medium text-gray-500">Satuan</h3>
-                                    <p class="mt-1 text-lg text-gray-900">{{ $stock->unit }}</p>
+                                    <p class="mt-1 text-lg text-gray-900">{{ $stock->weight . ' ' . $stock->unit }}</p>
                                 </div>
                             </div>
                             <div class="flex justify-end space-x-2">
