@@ -87,7 +87,7 @@
     </div>
 
     <!-- Laporan -->
-    <a href="#" class="flex items-center p-3 rounded-md bg-none transition hover-link">
+    <a href="{{ route('owner.report.index') }}" class="flex items-center p-3 rounded-md bg-none transition hover-link">
       <i class="bi bi-file-earmark-fill"></i>
       <span class="ml-3 nav-text font-semibold">Laporan</span>
     </a>
