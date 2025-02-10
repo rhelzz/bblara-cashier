@@ -11,6 +11,7 @@ use App\Http\Controllers\Owner\ReportOwnerController;
 use App\Http\Controllers\Owner\StockOwnerController;
 use App\Http\Controllers\Owner\UserOwnerController;
 use App\Http\Controllers\TransaksiQrisController;
+use App\Http\Controllers\Owner\ProfileOwnerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,5 +64,14 @@ Route::resource('owner/report', ReportOwnerController::class, [
 Route::patch('owner/stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('owner.stock.increment');
 
 Route::patch('owner/stock/decrement/{id}', [StockOwnerController::class, 'decrementQty'])->name('owner.stock.decrement');
+
+// Owner Routes
+Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () {
+    // Profile Routes
+    Route::get('/profile', [ProfileOwnerController::class, 'index'])->name('profile.index');
+    Route::put('/profile/update', [ProfileOwnerController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileOwnerController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('/profile/destroy', [ProfileOwnerController::class, 'destroy'])->name('profile.destroy');
+});
 
 require __DIR__.'/auth.php';

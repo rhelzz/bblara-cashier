@@ -14,6 +14,15 @@
       <img src="{{ asset('assets/logo-transparent.png') }}" alt="BbIarA Logo" class="w-48 mx-auto">
     </div>
 
+    @auth
+    <!-- Authenticated User Message -->
+    <div class="text-center mb-6">
+      <p class="text-lg font-medium text-gray-700">You are already logged in.</p>
+      <a href="{{ route('owner.dashboard.index') }}" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005281] hover:bg-[#153c53] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Go to Dashboard
+      </a>
+    </div>
+    @else
     <!-- Session Status -->
     @if (session('status'))
       <div class="mb-4 text-sm font-medium text-green-600">
@@ -51,7 +60,7 @@
       <div class="flex items-center justify-between">
         <label class="flex items-center">
           <input type="checkbox" name="remember" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-          <span class="ml-2 text-sm text-gray-600">Remember me</span>
+          <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
         </label>
         @if (Route::has('password.request'))
           <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:underline">Forgot password?</a>
@@ -66,6 +75,7 @@
         </button>
       </div>
     </form>
+    @endauth
   </div>
 </body>
 </html>
