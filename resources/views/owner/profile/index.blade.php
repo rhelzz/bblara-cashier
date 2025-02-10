@@ -4,11 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Settings - Bblara</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
-    <!-- Font CDN -->
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -42,9 +39,14 @@
         input[type="password"]:focus {
             background-color: #F3F4F6;
         }
-        /* Added transition for modal */
         .modal-transition {
             transition: all 0.3s ease-out;
+        }
+        .preview-image {
+            transition: opacity 0.3s ease;
+        }
+        .preview-image:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -82,6 +84,16 @@
                             </div>
                         @endif
 
+                        @if($errors->any())
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded relative mb-4 text-base" role="alert">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="space-y-8">
                             <!-- Profile Information -->
                             <div class="bg-white p-8 rounded-lg shadow-md">
@@ -92,20 +104,38 @@
 
                                     <!-- Avatar Section -->
                                     <div class="flex items-center space-x-6 mb-6">
-                                        <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-200">
+                                        <div class="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 group">
                                             @if($user->avatar)
-                                                <img src="{{ Storage::url('avatars/' . $user->avatar) }}" alt="Profile" class="w-full h-full object-cover">
+                                                <img src="{{ Storage::url('avatars/' . $user->avatar) }}" 
+                                                     alt="Profile" 
+                                                     class="w-full h-full object-cover preview-image"
+                                                     id="avatar-preview">
                                             @else
-                                                <div class="w-full h-full flex items-center justify-center text-gray-400">
+                                                <div id="avatar-placeholder" class="w-full h-full flex items-center justify-center text-gray-400">
                                                     <i class="bi bi-person-fill text-6xl"></i>
                                                 </div>
+                                                <img src="" 
+                                                     alt="Profile" 
+                                                     class="w-full h-full object-cover preview-image hidden"
+                                                     id="avatar-preview">
                                             @endif
+                                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <span class="text-white text-sm">Change Photo</span>
+                                            </div>
                                         </div>
                                         <div>
-                                            <input type="file" name="avatar" id="avatar" class="hidden" accept="image/*">
-                                            <label for="avatar" class="cursor-pointer px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
+                                            <input type="file" 
+                                                   name="avatar" 
+                                                   id="avatar" 
+                                                   class="hidden" 
+                                                   accept="image/*">
+                                            <label for="avatar" 
+                                                   class="cursor-pointer px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
                                                 Change Avatar
                                             </label>
+                                            <p class="mt-2 text-sm text-gray-500">
+                                                JPG, PNG, GIF up to 10MB
+                                            </p>
                                         </div>
                                     </div>
 
@@ -114,8 +144,12 @@
                                         <!-- Name -->
                                         <div class="space-y-2">
                                             <label for="name" class="block text-base font-medium text-gray-700">Name</label>
-                                            <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" 
-                                                class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]">
+                                            <input type="text" 
+                                                   name="name" 
+                                                   id="name" 
+                                                   value="{{ old('name', $user->name) }}" 
+                                                   class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
+                                                   required>
                                             @error('name')
                                                 <p class="text-red-500 text-base mt-1">{{ $message }}</p>
                                             @enderror
@@ -124,8 +158,12 @@
                                         <!-- Email -->
                                         <div class="space-y-2">
                                             <label for="email" class="block text-base font-medium text-gray-700">Email</label>
-                                            <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}"
-                                                class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]">
+                                            <input type="email" 
+                                                   name="email" 
+                                                   id="email" 
+                                                   value="{{ old('email', $user->email) }}"
+                                                   class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
+                                                   required>
                                             @error('email')
                                                 <p class="text-red-500 text-base mt-1">{{ $message }}</p>
                                             @enderror
@@ -135,7 +173,7 @@
                                     <!-- Submit Button -->
                                     <div class="flex justify-end mt-6">
                                         <button type="submit" 
-                                            class="w-full sm:w-auto px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
+                                                class="w-full sm:w-auto px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
                                             Save Changes
                                         </button>
                                     </div>
@@ -151,8 +189,11 @@
 
                                     <div class="space-y-2">
                                         <label for="current_password" class="block text-base font-medium text-gray-700">Current Password</label>
-                                        <input type="password" name="current_password" id="current_password"
-                                            class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50">
+                                        <input type="password" 
+                                               name="current_password" 
+                                               id="current_password"
+                                               class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50"
+                                               required>
                                         @error('current_password')
                                             <p class="text-red-500 text-base mt-1">{{ $message }}</p>
                                         @enderror
@@ -160,8 +201,11 @@
 
                                     <div class="space-y-2">
                                         <label for="password" class="block text-base font-medium text-gray-700">New Password</label>
-                                        <input type="password" name="password" id="password"
-                                            class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50">
+                                        <input type="password" 
+                                               name="password" 
+                                               id="password"
+                                               class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50"
+                                               required>
                                         @error('password')
                                             <p class="text-red-500 text-base mt-1">{{ $message }}</p>
                                         @enderror
@@ -169,12 +213,15 @@
 
                                     <div class="space-y-2">
                                         <label for="password_confirmation" class="block text-base font-medium text-gray-700">Confirm New Password</label>
-                                        <input type="password" name="password_confirmation" id="password_confirmation"
-                                            class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50">
+                                        <input type="password" 
+                                               name="password_confirmation" 
+                                               id="password_confirmation"
+                                               class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50"
+                                               required>
                                     </div>
 
                                     <button type="submit"
-                                        class="w-full sm:w-auto px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
+                                            class="w-full sm:w-auto px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
                                         Update Password
                                     </button>
                                 </form>
@@ -187,23 +234,19 @@
                                     Once your account is deleted, all of its resources and data will be permanently deleted.
                                 </p>
                                 <button onclick="toggleDeleteModal()"
-                                    class="px-6 py-3 text-base bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">
+                                        class="px-6 py-3 text-base bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition-colors duration-200">
                                     Delete Account
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Modal Backdrop -->
+                        <!-- Delete Account Modal -->
                         <div id="deleteModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
-                            <!-- Modal Background Overlay -->
                             <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
                             
-                            <!-- Modal Container -->
                             <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
-                                <!-- Modal Content -->
                                 <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                                     <div class="p-6">
-                                        <!-- Modal Header -->
                                         <div class="text-center">
                                             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 mb-4">
                                                 <i class="bi bi-exclamation-triangle text-red-600 text-xl"></i>
@@ -216,7 +259,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Modal Form -->
                                         <form action="{{ route('owner.profile.destroy') }}" method="POST" class="mt-5">
                                             @csrf
                                             @method('DELETE')
@@ -226,113 +268,98 @@
                                                     Please enter your password to confirm
                                                 </label>
                                                 <input type="password" 
-                                                    name="password" 
-                                                    id="delete-password" 
-                                                    class="h-10 px-3 w-full text-sm rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 transition-colors duration-200"
-                                                    required
-                                                    placeholder="Enter your password">
-                                                @error('password')
-                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                @enderror
+                                                       name="password" 
+                                                       id="delete-password" 
+                                                       class="h-10 px-3 w-full text-sm rounded-md border border-gray-300 shadow-sm focus:border-red-500 focus:ring focus:ring-red-200 focus:ring-opacity-50 transition-colors duration-200"
+                                                       required
+                                                       placeholder="Enter your password">
                                             </div>
 
-                                            <!-- Modal Footer -->
                                             <div class="flex justify-end gap-3 mt-6">
                                                 <button type="button" 
-                                                        onclick="toggleDeleteModal()"
-                                                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">
-                                                    Cancel
-                                                </button>
-                                                <button type="submit"
-                                                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
-                                                    Delete Account
-                                                </button>
-                                            </div>
-                                        </form>
-
-                                        <!-- Close button -->
-                                        <button onclick="toggleDeleteModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 transition-colors duration-200">
-                                            <i class="bi bi-x-lg"></i>
+                                                onclick="toggleDeleteModal()"
+                                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors duration-200">
+                                            Cancel
+                                        </button>
+                                        <button type="submit"
+                                                class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                                            Delete Account
                                         </button>
                                     </div>
-                                </div>
+                                </form>
+
+                                <!-- Close button -->
+                                <button onclick="toggleDeleteModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 transition-colors duration-200">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
                             </div>
                         </div>
-
-                        <!-- Footer -->
-                        <footer class="text-gray-400 text-center py-6 mt-8">
-                            <p class="text-base">Copyright &#169; 2024 Bblaratech3. All Rights Reserved.</p>
-                        </footer>
                     </div>
                 </div>
+
+                <!-- Footer -->
+                <footer class="text-gray-400 text-center py-6 mt-8">
+                    <p class="text-base">Copyright &#169; 2024 Bblaratech3. All Rights Reserved.</p>
+                </footer>
             </div>
         </div>
     </div>
+</div>
+</div>
 
-    <!-- Scripts -->
-    <script>
-        function toggleDropdown(button) {
-            const dropdownMenus = document.querySelectorAll(".dropdown-menu");
-            const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
+<!-- Scripts -->
+<script>
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    sidebar.classList.toggle('hidden');
+}
 
-            // Tutup semua dropdown kecuali yang dipilih
-            dropdownMenus.forEach((menu) => {
-                if (menu !== button.nextElementSibling) {
-                    menu.classList.add("max-h-0");
-                    menu.classList.remove("max-h-40");
-                }
-            });
+function toggleDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    } else {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
 
-            // Atur semua panah kecuali yang dipilih
-            dropdownArrows.forEach((arrow) => {
-                if (arrow !== button.querySelector("i.bi-chevron-down")) {
-                    arrow.classList.remove("rotate-180");
-                }
-            });
-
-            // Toggle dropdown yang dipilih
-            const dropdownMenu = button.nextElementSibling;
-            const dropdownArrow = button.querySelector("i.bi-chevron-down");
-
-            if (dropdownMenu.classList.contains("max-h-0")) {
-                dropdownMenu.classList.remove("max-h-0");
-                dropdownMenu.classList.add("max-h-40");
-                dropdownArrow.classList.add("rotate-180");
-            } else {
-                dropdownMenu.classList.add("max-h-0");
-                dropdownMenu.classList.remove("max-h-40");
-                dropdownArrow.classList.remove("rotate-180");
+// Avatar preview functionality
+document.getElementById('avatar').addEventListener('change', function(e) {
+    const preview = document.getElementById('avatar-preview');
+    const placeholder = document.getElementById('avatar-placeholder');
+    
+    if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) {
+                placeholder.classList.add('hidden');
             }
         }
+        
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
 
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            sidebar.classList.toggle('hidden');
-        }
+// Optional: Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('deleteModal');
+    const modalContent = modal.querySelector('.bg-white');
+    if (e.target === modal) {
+        toggleDeleteModal();
+    }
+});
 
-        function toggleDeleteModal() {
-            const modal = document.getElementById('deleteModal');
-            if (modal.classList.contains('hidden')) {
-                // Tampilkan modal
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Mencegah scrolling pada background
-            } else {
-                // Sembunyikan modal
-                modal.classList.add('hidden');
-                document.body.style.overflow = ''; // Mengembalikan scrolling
-            }
-        }
-
-        // Preview avatar image before upload
-        document.getElementById('avatar').addEventListener('change', function(e) {
-            if (e.target.files && e.target.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.querySelector('.w-20.h-20 img').src = e.target.result;
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            }
-        });
-    </script>
+// Optional: Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('deleteModal').classList.contains('hidden')) {
+        toggleDeleteModal();
+    }
+});
+</script>
 </body>
 </html>
