@@ -18,7 +18,7 @@
                 @php
                     $avatarPath = auth()->user()->avatar 
                         ? asset('storage/avatars/' . auth()->user()->avatar) 
-                        : 'https://via.placeholder.com/40?text=User';
+                        : asset('storage/avatars/dummy.jpeg');
                 @endphp
                 <img src="{{ $avatarPath }}" alt="Profile" class="w-10 h-10 rounded-full border-2 border-gray-300 object-cover">
             </a>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device=device-width, initial-scale=1.0" />
     <title>Profile Settings - Bblara</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
@@ -102,71 +102,71 @@
                                     @csrf
                                     @method('PUT')
 
-                                    <!-- Avatar Section -->
-                                    <div class="flex items-center space-x-6 mb-6">
-                                        <div class="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 group">
-                                            @if($user->avatar)
-                                                <img src="{{ Storage::url('avatars/' . $user->avatar) }}" 
-                                                     alt="Profile" 
-                                                     class="w-full h-full object-cover preview-image"
-                                                     id="avatar-preview">
-                                            @else
-                                                <div id="avatar-placeholder" class="w-full h-full flex items-center justify-center text-gray-400">
-                                                    <i class="bi bi-person-fill text-6xl"></i>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Avatar Section -->
+                                        <div class="flex flex-col items-center space-y-6 mb-6">
+                                            <div class="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 group">
+                                                @if($user->avatar)
+                                                    <img src="{{ Storage::url('avatars/' . $user->avatar) }}" 
+                                                         alt="Profile" 
+                                                         class="w-full h-full object-cover preview-image"
+                                                         id="avatar-preview">
+                                                @else
+                                                    <div id="avatar-placeholder" class="w-full h-full flex items-center justify-center text-gray-400">
+                                                        <i class="bi bi-person-fill text-6xl"></i>
+                                                    </div>
+                                                    <img src="{{ asset('storage/avatars/dummy.jpeg') }}" 
+                                                         alt="Profile" 
+                                                         class="w-full h-full object-cover preview-image hidden"
+                                                         id="avatar-preview">
+                                                @endif
+                                                <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <span class="text-white text-sm">Change Photo</span>
                                                 </div>
-                                                <img src="" 
-                                                     alt="Profile" 
-                                                     class="w-full h-full object-cover preview-image hidden"
-                                                     id="avatar-preview">
-                                            @endif
-                                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span class="text-white text-sm">Change Photo</span>
+                                            </div>
+                                            <div>
+                                                <input type="file" 
+                                                       name="avatar" 
+                                                       id="avatar" 
+                                                       class="hidden" 
+                                                       accept="image/*">
+                                                <label for="avatar" 
+                                                       class="cursor-pointer px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
+                                                    Change Avatar
+                                                </label>
+                                                <p class="mt-2 text-sm text-gray-500">
+                                                    JPG, PNG, GIF up to 10MB
+                                                </p>
                                             </div>
                                         </div>
-                                        <div>
-                                            <input type="file" 
-                                                   name="avatar" 
-                                                   id="avatar" 
-                                                   class="hidden" 
-                                                   accept="image/*">
-                                            <label for="avatar" 
-                                                   class="cursor-pointer px-6 py-3 text-base bg-[#005281] text-white rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200">
-                                                Change Avatar
-                                            </label>
-                                            <p class="mt-2 text-sm text-gray-500">
-                                                JPG, PNG, GIF up to 10MB
-                                            </p>
-                                        </div>
-                                    </div>
 
-                                    <!-- Name and Email Section -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <!-- Name -->
-                                        <div class="space-y-2">
-                                            <label for="name" class="block text-base font-medium text-gray-700">Name</label>
-                                            <input type="text" 
-                                                   name="name" 
-                                                   id="name" 
-                                                   value="{{ old('name', $user->name) }}" 
-                                                   class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
-                                                   required>
-                                            @error('name')
-                                                <p class="text-red-500 text-base mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+                                        <!-- Name and Email Section -->
+                                        <div class="space-y-6">
+                                            <div class="space-y-2">
+                                                <label for="name" class="block text-base font-medium text-gray-700">Name</label>
+                                                <input type="text" 
+                                                       name="name" 
+                                                       id="name" 
+                                                       value="{{ old('name', $user->name) }}" 
+                                                       class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
+                                                       required>
+                                                @error('name')
+                                                    <p class="text-red-500 text-base mt-1">{{ $message }}</p>
+                                                @enderror
+                                            </div>
 
-                                        <!-- Email -->
-                                        <div class="space-y-2">
-                                            <label for="email" class="block text-base font-medium text-gray-700">Email</label>
-                                            <input type="email" 
-                                                   name="email" 
-                                                   id="email" 
-                                                   value="{{ old('email', $user->email) }}"
-                                                   class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
-                                                   required>
-                                            @error('email')
-                                                <p class="text-red-500 text-base mt-1">{{ $message }}</p>
-                                            @enderror
+                                            <div class="space-y-2">
+                                                <label for="email" class="block text-base font-medium text-gray-700">Email</label>
+                                                <input type="email" 
+                                                       name="email" 
+                                                       id="email" 
+                                                       value="{{ old('email', $user->email) }}"
+                                                       class="h-12 px-4 mt-1 block w-full text-base rounded-md border-gray-300 shadow-sm focus:border-[#005281] focus:ring focus:ring-[#005281] focus:ring-opacity-50 bg-[#F9FAFB]"
+                                                       required>
+                                                @error('email')
+                                                    <p class="text-red-500 text-base mt-1">{{ $message }}</p>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
 
