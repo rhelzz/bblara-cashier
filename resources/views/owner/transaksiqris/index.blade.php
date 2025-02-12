@@ -239,17 +239,19 @@
             localStorage.setItem('transactionTableSort', isAscending ? 'asc' : 'desc');
         }
 
-        // Initialize sorting preference from localStorage and sort by newest first by default
+        // Initialize sorting preference from localStorage and sort by oldest first by default
         document.addEventListener('DOMContentLoaded', function() {
-            const savedSort = localStorage.getItem('transactionTableSort');
-            if (savedSort) {
-                isAscending = savedSort === 'asc';
-            } else {
-                // Set default to sort by newest first
-                isAscending = false;
-            }
-            sortTable(); // Apply initial sort
-            updateDateTime(); // Initialize datetime
+            // Set isAscending to true by default to sort from oldest to newest
+            isAscending = true;
+            
+            // Apply initial sort
+            sortTable();
+            
+            // After initial sort, set isAscending to false so the next click will sort newest to oldest
+            isAscending = false;
+            
+            // Initialize datetime
+            updateDateTime();
         });
       </script>
     </body>

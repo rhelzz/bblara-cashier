@@ -231,25 +231,29 @@
             // Add sorted rows back
             const totalRow = tbody.querySelector('.bg-gray-50');
             rows.forEach(row => tbody.insertBefore(row, totalRow));
-
-            // Toggle sort direction for next click
-            isAscending = !isAscending;
-
-            // Save sort preference to localStorage
-            localStorage.setItem('transactionTableSort', isAscending ? 'asc' : 'desc');
         }
 
-        // Initialize sorting preference from localStorage and sort by newest first by default
+        // Initialize sorting when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            const savedSort = localStorage.getItem('transactionTableSort');
-            if (savedSort) {
-                isAscending = savedSort === 'asc';
-            } else {
-                // Set default to sort by newest first
-                isAscending = false;
-            }
-            sortTable(); // Apply initial sort
-            updateDateTime(); // Initialize datetime
+            // Set initial state to true for oldest to newest sorting
+            isAscending = true;
+            
+            // Update sort icon to show initial state
+            const sortIcon = document.getElementById('sort-icon');
+            sortIcon.innerHTML = '<i class="bi bi-arrow-up text-orange-500"></i>';
+            
+            // Perform initial sort
+            sortTable();
+            
+            // Initialize datetime
+            updateDateTime();
+            
+            // Add click handler for the sort header
+            const sortHeader = document.querySelector('th[onclick="sortTable()"]');
+            sortHeader.addEventListener('click', function() {
+                isAscending = !isAscending;
+                sortTable();
+            });
         });
       </script>
     </body>
