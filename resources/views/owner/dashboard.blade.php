@@ -451,24 +451,29 @@
 
       // Update cards
       function updateCards(data) {
-        if (!data) return;
+          if (!data) return;
 
-        const formatCurrency = (value) => 'Rp' + new Intl.NumberFormat('id-ID').format(value || 0);
+          const formatCurrency = (value) => 'Rp' + new Intl.NumberFormat('id-ID').format(value || 0);
+          const formatPercentage = (value) => value ? value.toFixed(2) : '0.00';
 
-        ['Modal', 'Pendapatan', 'Keuntungan'].forEach(type => {
-          const total = document.querySelector(`#total${type}`);
-          const percentage = document.querySelector(`#${type.toLowerCase()}Percentage`);
-          
-          if (total) total.textContent = formatCurrency(data[`today${type}`]);
-          if (percentage) {
-            const percentValue = data[`${type.toLowerCase()}Percentage`] || 0;
-            const diffValue = data[`${type.toLowerCase()}Diff`] || 0;
-            const isPositive = percentValue >= 0;
-            
-            percentage.className = `text-${isPositive ? 'green' : 'red'}-500 text-sm mb-2`;
-            percentage.textContent = `${percentValue.toFixed(1)}% (${isPositive ? '+' : ''}${formatCurrency(diffValue)}) dibanding periode sebelumnya`;
-          }
-        });
+          ['Modal', 'Pendapatan', 'Keuntungan'].forEach(type => {
+              const total = document.querySelector(`#total${type}`);
+              const percentage = document.querySelector(`#${type.toLowerCase()}Percentage`);
+              const lowerType = type.toLowerCase();
+              
+              if (total) {
+                  total.textContent = formatCurrency(data[`today${type}`]);
+              }
+              
+              if (percentage) {
+                  const percentValue = data[`${lowerType}Percentage`] || 0;
+                  const diffValue = data[`${lowerType}Diff`] || 0;
+                  const isPositive = percentValue >= 0;
+                  
+                  percentage.className = `text-${isPositive ? 'green' : 'red'}-500 text-sm mb-2`;
+                  percentage.textContent = `${formatPercentage(percentValue)}% (${isPositive ? '+' : ''}${formatCurrency(diffValue)}) dibanding periode sebelumnya`;
+              }
+          });
       }
 
       // Update chart

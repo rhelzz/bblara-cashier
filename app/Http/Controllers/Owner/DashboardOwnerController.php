@@ -51,9 +51,7 @@ class DashboardOwnerController extends Controller
 
     public function getDataByDateRange(Request $request)
     {
-        $startDate = null;
-        $endDate = null;
-
+        // Tentukan rentang tanggal
         if ($request->has('preset')) {
             $dates = $this->getPresetDates($request->preset);
             $startDate = Carbon::parse($dates['start'])->startOfDay();
@@ -63,20 +61,82 @@ class DashboardOwnerController extends Controller
             $endDate = Carbon::parse($request->input('end'))->endOfDay();
         }
 
-        $rangeQris = TransaksiQris::whereBetween('timestamp', [$startDate, $endDate])->get();
-        $rangeTunai = TransaksiTunai::whereBetween('timestamp', [$startDate, $endDate])->get();
+        // Data periode saat ini
+        $currentQris = TransaksiQris::whereBetween('timestamp', [$startDate, $endDate])->get();
+        $currentTunai = TransaksiTunai::whereBetween('timestamp', [$startDate, $endDate])->get();
 
-        $rangeModal = $rangeQris->sum('total_cost_price') + $rangeTunai->sum('total_cost_price');
-        $rangePendapatan = $rangeQris->sum('subtotal') + $rangeTunai->sum('subtotal');
-        $rangeKeuntungan = $rangePendapatan - $rangeModal;
+        $currentModal = $currentQris->sum('total_cost_price') + $currentTunai->sum('total_cost_price');
+        $currentPendapatan = $currentQris->sum('subtotal') + $currentTunai->sum('subtotal');
+        $currentKeuntungan = $currentPendapatan - $currentModal;
 
-        // Get monthly data with the new comparison logic
-        $monthlyData = $this->getMonthlyData($startDate, $endDate, $rangeModal, $rangePendapatan, $rangeKeuntungan);
+        // Tentukan periode sebelumnya berdasarkan preset
+        $previousStartDate = '';
+        $previousEndDate = '';
+        
+        switch($request->preset) {
+            case 'today':
+                $previousStartDate = Carbon::yesterday()->startOfDay();
+                $previousEndDate = Carbon::yesterday()->endOfDay();
+                break;
+            case 'yesterday':
+                $previousStartDate = Carbon::now()->subDays(2)->startOfDay();
+                $previousEndDate = Carbon::now()->subDays(2)->endOfDay();
+                break;
+            case 'last7days':
+                $previousStartDate = Carbon::now()->subDays(14)->startOfDay();
+                $previousEndDate = Carbon::now()->subDays(8)->endOfDay();
+                break;
+            case 'last30days':
+                $previousStartDate = Carbon::now()->subDays(60)->startOfDay();
+                $previousEndDate = Carbon::now()->subDays(31)->endOfDay();
+                break;
+            case 'thisMonth':
+                $previousStartDate = Carbon::now()->subMonth()->startOfMonth();
+                $previousEndDate = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'lastMonth':
+                $previousStartDate = Carbon::now()->subMonths(2)->startOfMonth();
+                $previousEndDate = Carbon::now()->subMonths(2)->endOfMonth();
+                break;
+            default:
+                // Untuk custom date range
+                $daysDiff = $startDate->diffInDays($endDate) + 1;
+                $previousStartDate = $startDate->copy()->subDays($daysDiff);
+                $previousEndDate = $startDate->copy()->subDay();
+        }
+
+        // Data periode sebelumnya
+        $previousQris = TransaksiQris::whereBetween('timestamp', [$previousStartDate, $previousEndDate])->get();
+        $previousTunai = TransaksiTunai::whereBetween('timestamp', [$previousStartDate, $previousEndDate])->get();
+
+        $previousModal = $previousQris->sum('total_cost_price') + $previousTunai->sum('total_cost_price');
+        $previousPendapatan = $previousQris->sum('subtotal') + $previousTunai->sum('subtotal');
+        $previousKeuntungan = $previousPendapatan - $previousModal;
+
+        // Hitung persentase perubahan
+        // Menggunakan nilai absolut untuk perhitungan persentase
+        $modalPercentage = $previousModal != 0 ? (($currentModal - $previousModal) / abs($previousModal)) * 100 : 0;
+        $pendapatanPercentage = $previousPendapatan != 0 ? (($currentPendapatan - $previousPendapatan) / abs($previousPendapatan)) * 100 : 0;
+        $keuntunganPercentage = $previousKeuntungan != 0 ? (($currentKeuntungan - $previousKeuntungan) / abs($previousKeuntungan)) * 100 : 0;
+
+        // Hitung selisih nominal (tetap menggunakan current - previous)
+        $modalDiff = $currentModal - $previousModal;
+        $pendapatanDiff = $currentPendapatan - $previousPendapatan;
+        $keuntunganDiff = $currentKeuntungan - $previousKeuntungan;
+
+        // Ambil data bulanan untuk grafik
+        $monthlyData = $this->getMonthlyData($startDate, $endDate, $currentModal, $currentPendapatan, $currentKeuntungan);
 
         return response()->json([
-            'todayModal' => $rangeModal,
-            'todayPendapatan' => $rangePendapatan,
-            'todayKeuntungan' => $rangeKeuntungan,
+            'todayModal' => $currentModal,
+            'todayPendapatan' => $currentPendapatan,
+            'todayKeuntungan' => $currentKeuntungan,
+            'modalPercentage' => round($modalPercentage, 2),
+            'pendapatanPercentage' => round($pendapatanPercentage, 2),
+            'keuntunganPercentage' => round($keuntunganPercentage, 2),
+            'modalDiff' => $modalDiff,
+            'pendapatanDiff' => $pendapatanDiff,
+            'keuntunganDiff' => $keuntunganDiff,
             'monthlyData' => $monthlyData
         ]);
     }
