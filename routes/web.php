@@ -7,6 +7,7 @@ use App\Http\Controllers\Owner\CashierOwnerController;
 use App\Http\Controllers\Owner\ProductOwnerController;
 use App\Http\Controllers\Owner\DashboardOwnerController;
 use App\Http\Controllers\Karyawan\DashboardKaryawanController;
+use App\Http\Controllers\Owner\NotificationOwnerController;
 use App\Http\Controllers\Owner\ReportOwnerController;
 use App\Http\Controllers\Owner\StockOwnerController;
 use App\Http\Controllers\Owner\UserOwnerController;
@@ -61,9 +62,19 @@ Route::resource('owner/report', ReportOwnerController::class, [
     'as' => 'owner'
 ]);
 
+Route::resource('owner/notification', NotificationOwnerController::class, [
+    'as' => 'owner'
+]);
+
 Route::patch('owner/stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('owner.stock.increment');
 
 Route::patch('owner/stock/decrement/{id}', [StockOwnerController::class, 'decrementQty'])->name('owner.stock.decrement');
+
+Route::get('/owner/notifications/unread-count', [NotificationOwnerController::class, 'unreadCount']);
+
+Route::post('/owner/notifications/mark-as-read', [NotificationOwnerController::class, 'markAsRead']);
+
+Route::post('/owner/notifications/clear-all', [NotificationOwnerController::class, 'clearAll']);
 
 // Owner Routes
 Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () {

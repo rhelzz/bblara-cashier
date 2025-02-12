@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Stock;
+use App\Models\Notification;
 
 class StockOwnerController extends Controller
 {
@@ -40,6 +41,8 @@ class StockOwnerController extends Controller
 
         Stock::create($request->all());
 
+        $this->checkStockLevels();
+
         return redirect()->route('owner.stock.index')->with('success', 'Stock created successfully.');
     }
 
@@ -71,7 +74,20 @@ class StockOwnerController extends Controller
             'unit' => 'required|string|max:10',
         ]);
 
+        $oldQty = $stock->qty;
+        $newQty = $request->qty;
+
         $stock->update($request->all());
+
+        // Check if the new quantity is less than 3 and the quantity was reduced
+        if ($newQty < 3 && $newQty < $oldQty) {
+            Notification::create([
+                'message' => 'Stock for ' . $stock->raw_material . ' has been reduced to ' . $newQty . ' units during editing.',
+            ]);
+        }
+
+        // Also run the general stock level check
+        $this->checkStockLevels();
 
         return redirect()->route('owner.stock.index')->with('success', 'Stock updated successfully.');
     }
@@ -103,6 +119,18 @@ class StockOwnerController extends Controller
             $stock->save();
         }
 
+        $this->checkStockLevels();
+
         return redirect()->route('owner.stock.index')->with('success', 'Quantity decreased successfully.');
+    }
+
+    protected function checkStockLevels()
+    {
+        $stocks = Stock::where('qty', '<', 3)->get();
+        foreach ($stocks as $stock) {
+            Notification::create([
+                'message' => 'Stock for ' . $stock->raw_material . ' is below 3. Current quantity: ' . $stock->qty,
+            ]);
+        }
     }
 }
