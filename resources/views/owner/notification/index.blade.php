@@ -58,28 +58,19 @@
                                 @if($notifications->isEmpty())
                                     <p>No notifications found.</p>
                                 @else
-                                    @foreach ($notifications as $notification)
-                                        <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                                            <div class="flex items-center justify-between">
-                                                <div class="flex items-center">
-                                                    <div>
-                                                        <p class="text-gray-800">{{ $notification->message }}</p>
-                                                        <p class="text-gray-500 text-sm">{{ $notification->created_at->format('h:i A') }}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="text-gray-500 text-sm">
-                                                    <div class="flex items-center">
-                                                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                                                        {{ $notification->created_at->format('F j, Y') }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
+                                    <div id="notifications-container">
+                                        @include('owner.notification.partials.notifications', ['notifications' => $notifications])
+                                    </div>
                                 @endif
-                                <div class="text-center mt-4">
-                                    <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Load more</button>
-                                </div>
+                                @if ($notifications->hasMorePages())
+                                    <div class="text-center mt-4">
+                                        <button id="load-more-btn" 
+                                                class="bg-gray-200 text-gray-700 px-4 py-2 rounded" 
+                                                data-next-page="{{ $notifications->nextPageUrl() }}">
+                                            Load more
+                                        </button>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -90,11 +81,16 @@
 
     <!-- Scripts -->
     <script>
+        // Global variable to prevent multiple simultaneous loads
+        let loading = false;
+
+        // Sidebar toggle function
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
             sidebar.classList.toggle('hidden');
         }
 
+        // Delete modal toggle function
         function toggleDeleteModal() {
             const modal = document.getElementById('deleteModal');
             if (modal.classList.contains('hidden')) {
@@ -106,12 +102,14 @@
             }
         }
 
-        document.getElementById('clear-all-btn').addEventListener('click', function () {
+        // Clear all notifications function
+        document.getElementById('clear-all-btn')?.addEventListener('click', function () {
             if (confirm('Are you sure you want to clear all notifications?')) {
                 fetch('/owner/notifications/clear-all', {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/json'
                     }
                 })
@@ -129,6 +127,94 @@
                 });
             }
         });
+
+        // Updated Load More function
+        function loadMore() {
+            // Prevent multiple simultaneous loads
+            if (loading) return;
+            
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            // Get the next page URL from the button's data attribute
+            const nextPageUrl = loadMoreBtn.getAttribute('data-next-page') || loadMoreBtn.dataset.nextPage;
+            
+            if (!nextPageUrl) {
+                loadMoreBtn.remove();
+                return;
+            }
+            
+            // Set loading state
+            loading = true;
+            loadMoreBtn.textContent = 'Loading...';
+            
+            // Make the fetch request
+            fetch(nextPageUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const notificationsContainer = document.getElementById('notifications-container');
+                notificationsContainer.insertAdjacentHTML('beforeend', data.notifications);
+                
+                if (data.hasMorePages && data.nextPageUrl) {
+                    loadMoreBtn.setAttribute('data-next-page', data.nextPageUrl);
+                } else {
+                    loadMoreBtn.remove();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load more notifications.');
+            })
+            .finally(() => {
+                loading = false;
+                if (loadMoreBtn && document.contains(loadMoreBtn)) {
+                    loadMoreBtn.textContent = 'Load more';
+                }
+            });
+        }
+
+        // Attach event listener to load more button
+        document.getElementById('load-more-btn')?.addEventListener('click', loadMore);
+
+        // Dropdown toggle function
+        function toggleDropdown(button) {
+            const dropdownMenus = document.querySelectorAll(".dropdown-menu");
+            const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
+
+            dropdownMenus.forEach((menu) => {
+                if (menu !== button.nextElementSibling) {
+                    menu.classList.add("max-h-0");
+                    menu.classList.remove("max-h-40");
+                }
+            });
+
+            dropdownArrows.forEach((arrow) => {
+                if (arrow !== button.querySelector("i.bi-chevron-down")) {
+                    arrow.classList.remove("rotate-180");
+                }
+            });
+
+            const dropdownMenu = button.nextElementSibling;
+            const dropdownArrow = button.querySelector("i.bi-chevron-down");
+
+            if (dropdownMenu.classList.contains("max-h-0")) {
+                dropdownMenu.classList.remove("max-h-0");
+                dropdownMenu.classList.add("max-h-40");
+                dropdownArrow.classList.add("rotate-180");
+            } else {
+                dropdownMenu.classList.add("max-h-0");
+                dropdownMenu.classList.remove("max-h-40");
+                dropdownArrow.classList.remove("rotate-180");
+            }
+        }
     </script>
     <script>
         function toggleDropdown(button) {

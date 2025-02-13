@@ -129,7 +129,7 @@ class StockOwnerController extends Controller
         $stocks = Stock::where('qty', '<', 3)->get();
         foreach ($stocks as $stock) {
             Notification::create([
-                'message' => 'Stock for ' . $stock->raw_material . ' is below 3. Current quantity: ' . $stock->qty,
+                'message' => 'Stok untuk ' . $stock->raw_material . ' ada dibawah 3. Stok yang tersedia tersisa: ' . $stock->qty,
             ]);
         }
     }

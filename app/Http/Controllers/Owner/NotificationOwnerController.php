@@ -11,9 +11,18 @@ class NotificationOwnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::all();
+        $notifications = Notification::orderBy('created_at', 'desc')->paginate(5);
+
+        if ($request->ajax()) {
+            $view = view('owner.notification.partials.notifications', compact('notifications'))->render();
+            return response()->json([
+                'notifications' => $view,
+                'hasMorePages' => $notifications->hasMorePages(),
+                'nextPageUrl' => $notifications->nextPageUrl()
+            ]);
+        }
 
         return view('owner.notification.index', compact('notifications'));
     }

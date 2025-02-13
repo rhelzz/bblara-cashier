@@ -28,61 +28,44 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Owner Route
-
-Route::resource('owner/dashboard', DashboardOwnerController::class, [
-    'as' => 'owner'
-]);
-
-Route::resource('owner/cashier', CashierOwnerController::class, [
-    'as' => 'owner'
-]);
-
-Route::resource('owner/product', ProductOwnerController::class, [
-    'as'=> 'owner'
-]);
-
-Route::resource('owner/transaksitunai', TransaksiTunaiController::class, [
-    'as' => 'owner'
-]);
-
-Route::resource('owner/transaksiqris', TransaksiQrisController::class, [
-    'as'=> 'owner'
-]);
-
-Route::resource('owner/stock', StockOwnerController::class, [
-    'as'=> 'owner'
-]);
-
-Route::resource('owner/user', UserOwnerController::class, [
-    'as' => 'owner'
-]);
-
-Route::resource('owner/report', ReportOwnerController::class, [
-    'as' => 'owner'
-]);
-
-Route::resource('owner/notification', NotificationOwnerController::class, [
-    'as' => 'owner'
-]);
-
-Route::patch('owner/stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('owner.stock.increment');
-
-Route::patch('owner/stock/decrement/{id}', [StockOwnerController::class, 'decrementQty'])->name('owner.stock.decrement');
-
-Route::get('/owner/notifications/unread-count', [NotificationOwnerController::class, 'unreadCount']);
-
-Route::post('/owner/notifications/mark-as-read', [NotificationOwnerController::class, 'markAsRead']);
-
-Route::post('/owner/notifications/clear-all', [NotificationOwnerController::class, 'clearAll']);
-
 // Owner Routes
 Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () {
-    // Profile Routes
-    Route::get('/profile', [ProfileOwnerController::class, 'index'])->name('profile.index');
-    Route::put('/profile/update', [ProfileOwnerController::class, 'update'])->name('profile.update');
-    Route::put('/profile/password', [ProfileOwnerController::class, 'updatePassword'])->name('profile.password');
-    Route::delete('/profile/destroy', [ProfileOwnerController::class, 'destroy'])->name('profile.destroy');
+    
+    // Dashboard
+    Route::resource('dashboard', DashboardOwnerController::class);
+    
+    // Cashier
+    Route::resource('cashier', CashierOwnerController::class);
+    
+    // Product
+    Route::resource('product', ProductOwnerController::class);
+    
+    // Transactions
+    Route::resource('transaksitunai', TransaksiTunaiController::class);
+    Route::resource('transaksiqris', TransaksiQrisController::class);
+    
+    // Stock
+    Route::resource('stock', StockOwnerController::class);
+    Route::patch('stock/increment/{id}', [StockOwnerController::class, 'incrementQty'])->name('stock.increment');
+    Route::patch('stock/decrement/{id}', [StockOwnerController::class, 'decrementQty'])->name('stock.decrement');
+    
+    // User
+    Route::resource('user', UserOwnerController::class);
+    
+    // Report
+    Route::resource('report', ReportOwnerController::class);
+    
+    // Notifications
+    Route::resource('notification', NotificationOwnerController::class);
+    Route::get('notifications/unread-count', [NotificationOwnerController::class, 'unreadCount']);
+    Route::post('notifications/mark-as-read', [NotificationOwnerController::class, 'markAsRead']);
+    Route::post('notifications/clear-all', [NotificationOwnerController::class, 'clearAll']);
+    
+    // Profile
+    Route::get('profile', [ProfileOwnerController::class, 'index'])->name('profile.index');
+    Route::put('profile/update', [ProfileOwnerController::class, 'update'])->name('profile.update');
+    Route::put('profile/password', [ProfileOwnerController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('profile/destroy', [ProfileOwnerController::class, 'destroy'])->name('profile.destroy');
 });
 
 require __DIR__.'/auth.php';
