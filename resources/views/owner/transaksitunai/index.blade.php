@@ -77,7 +77,7 @@
           <div class="p-6 bg-gray-100 min-h-screen">
               <div class="max-w-7xl mx-auto">
                   <div class="flex justify-between items-center mb-6">
-                      <h1 class="text-2xl font-semibold text-gray-900">Daftar Transaksi Tunai</h1>
+                      <h1 class="text-3xl font-bold text-gray-800">Daftar Transaksi Tunai</h1>
                       <div class="text-sm text-gray-600">
                           <p>Current User: {{ Auth::user()->name ?? 'rhelzz' }}</p>
                           <p>Date: <span id="currentDateTime">2025-01-30 04:55:24</span></p>

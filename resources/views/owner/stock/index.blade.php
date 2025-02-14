@@ -42,7 +42,7 @@
                 <div class="p-6 bg-gray-100 min-h-screen">
                     <div class="max-w-7xl mx-auto">
                         <div class="flex justify-between items-center mb-6">
-                            <h1 class="text-2xl font-semibold text-gray-900">Daftar Stok</h1>
+                            <h1 class="text-3xl font-bold text-gray-800">Daftar Stok</h1>
                             <a href="{{ route('owner.stock.create') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
                                 Tambah Stok
                             </a>

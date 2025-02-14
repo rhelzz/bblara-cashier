@@ -6,7 +6,7 @@
     <title>Perbandingan Transaksi - Bblara</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -31,8 +31,14 @@
         }
         .chart-container {
             position: relative;
-            width: 50%;
+            height: 300px;
             margin: auto;
+        }
+        .stats-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
         }
     </style>
 </head>
@@ -44,30 +50,78 @@
         <x-navbar-owner></x-navbar-owner>
         <div class="flex-1 lg:w-5/6">
             <x-navbar-top-owner></x-navbar-top-owner>
-            <div>
-                <div class="w-1/2 py-4 lg:p-8">
-                    <h1 class="text-2xl font-bold mb-4">Perbandingan Transaksi</h1>
-                    <div class="bg-white p-2 rounded-lg shadow-lg">
+            
+            <div class="p-6 lg:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">Perbandingan Transaksi</h1>
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-download me-2"></i>Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Chart Card -->
+                    <div class="bg-white rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">Grafik Perbandingan</h2>
                         <div class="chart-container">
-                            <canvas id="transactionChart" width="200" height="200"></canvas>
+                            <canvas id="transactionChart"></canvas>
                         </div>
-                        <p class="text-lg font-normal text-gray-800 mt-4">
-                            Jadi transaksi terbanyak adalah
-                            <span class="text-blue-600">
-                                @if($qrisCount > $tunaiCount)
-                                    Transaksi Qris ({{ $qrisCount }} Transaksi)
-                                @elseif($tunaiCount > $qrisCount)
-                                    Transaksi Tunai ({{ $tunaiCount }} Transaksi)
-                                @else
-                                    Qris dan Tunai sama banyaknya ({{ $qrisCount }} transaksi)
-                                @endif
-                            </span>
-                        </p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 gap-6">
+                        <!-- QRIS Stats -->
+                        <div class="stats-card bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg p-6">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-white text-lg">Total QRIS</p>
+                                    <h3 class="text-white text-3xl font-bold">{{ $qrisCount }}</h3>
+                                    <p class="text-purple-100 mt-2">Transaksi</p>
+                                </div>
+                                <div class="bg-white/20 p-4 rounded-lg">
+                                    <i class="bi bi-qr-code text-4xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cash Stats -->
+                        <div class="stats-card bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow-lg p-6">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-white text-lg">Total Tunai</p>
+                                    <h3 class="text-white text-3xl font-bold">{{ $tunaiCount }}</h3>
+                                    <p class="text-blue-100 mt-2">Transaksi</p>
+                                </div>
+                                <div class="bg-white/20 p-4 rounded-lg">
+                                    <i class="bi bi-cash text-4xl text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary Card -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Kesimpulan</h3>
+                            <div class="flex items-center">
+                                <i class="bi bi-trophy-fill text-yellow-500 text-3xl mr-4"></i>
+                                <p class="text-lg">
+                                    @if($qrisCount > $tunaiCount)
+                                        <span class="font-semibold text-purple-600">QRIS</span> adalah metode pembayaran terpopuler dengan {{ $qrisCount }} transaksi
+                                    @elseif($tunaiCount > $qrisCount)
+                                        <span class="font-semibold text-blue-600">Tunai</span> adalah metode pembayaran terpopuler dengan {{ $tunaiCount }} transaksi
+                                    @else
+                                        QRIS dan Tunai memiliki jumlah yang sama yaitu {{ $qrisCount }} transaksi
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('x-navbar-owner');
@@ -78,19 +132,20 @@
         const transactionChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Qris', 'Tunai'],
+                labels: ['QRIS', 'Tunai'],
                 datasets: [{
                     label: 'Jumlah Transaksi',
                     data: [{{ $qrisCount }}, {{ $tunaiCount }}],
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.8)',
-                        'rgba(54, 162, 235, 0.8)'
+                        'rgba(147, 51, 234, 0.8)',  // Purple for QRIS
+                        'rgba(59, 130, 246, 0.8)'   // Blue for Cash
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
+                        'rgba(147, 51, 234, 1)',
+                        'rgba(59, 130, 246, 1)'
                     ],
-                    borderWidth: 1
+                    borderWidth: 2,
+                    borderRadius: 8
                 }]
             },
             options: {
@@ -100,7 +155,25 @@
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            stepSize: 1
+                            stepSize: 1,
+                            font: {
+                                family: 'Raleway'
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: 'Raleway',
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
                         }
                     }
                 },
@@ -109,6 +182,17 @@
                         display: false
                     },
                     tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            family: 'Raleway',
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: 'Raleway',
+                            size: 13
+                        },
                         callbacks: {
                             label: function(tooltipItem) {
                                 return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' Transaksi';
@@ -119,6 +203,7 @@
             }
         });
     </script>
+
     <script>
         function toggleDropdown(button) {
             const dropdownMenus = document.querySelectorAll(".dropdown-menu");
