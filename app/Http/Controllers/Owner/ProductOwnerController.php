@@ -38,7 +38,7 @@ class ProductOwnerController extends Controller
             'name' => 'required|string|max:255',
             'cost_price' => 'required|numeric',
             'price' => 'required|numeric',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10000', // Validate image upload
         ]);
 
         // Handle image upload
@@ -80,7 +80,7 @@ class ProductOwnerController extends Controller
             'name' => 'required|string|max:255',
             'cost_price' => 'required|numeric',
             'price' => 'required|numeric',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10000', // Validate image upload
         ]);
 
         // Handle image upload

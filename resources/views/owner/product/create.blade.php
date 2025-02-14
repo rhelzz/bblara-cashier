@@ -207,6 +207,9 @@
           dropzone.classList.remove('dragover');
           const files = event.dataTransfer.files;
           imageInput.files = files;
+          if (files.length > 0) {
+            dropzone.querySelector('p').innerText = files[0].name;
+          }
         });
 
         dropzone.addEventListener('click', () => {

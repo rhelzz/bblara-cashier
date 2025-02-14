@@ -209,7 +209,7 @@
                                     <label class="block font-medium text-gray-700 mb-2">Amount:</label>
                                     <div class="flex items-center justify-center space-x-2">
                                         <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white font-bold lg:h-10 lg:w-10 lg:text-sm" onclick="decrementAmount()">-</button>
-                                        <input type="text" name="amount" value="1" class="w-10 text-center border rounded h-12" readonly>
+                                        <input type="text" name="amount" value="1" class="w-10 text-center border rounded h-12">
                                         <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white lg:h-10 lg:w-10 lg:text-sm" onclick="incrementAmount()">+</button>
                                     </div>
                                 </div>
@@ -424,6 +424,21 @@
             document.querySelectorAll('form[data-product-price]').forEach(form => {
                 updatePrice.call(form);
             });
+
+            // Add event listeners for manual input on amount fields
+            document.querySelectorAll('input[name="amount"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    // Ensure the value is a positive integer
+                    let value = parseInt(this.value);
+                    if (isNaN(value) || value < 1) {
+                        value = 1;
+                        this.value = 1;
+                    }
+                    
+                    const form = this.closest('form');
+                    updatePrice(form);
+                });
+            });
         });
 
         // Function to toggle dropdown
@@ -489,16 +504,14 @@
         }
 
         // Function to update price
-        function updatePrice() {
-            const form = this.tagName === 'FORM' ? this : this.closest('form');
-            const basePrice = parseInt(form.getAttribute('data-product-price'));
-            const amount = parseInt(form.querySelector('input[name="amount"]').value);
-            const size = form.querySelector('input[name="size"]:checked');
-            const topping = form.querySelector('input[name="topping"]:checked');
+        function updatePrice(form) {
+            const formToUpdate = form || this.closest('form');
+            if (!formToUpdate) return;
 
-            // Add console.log for debugging
-            console.log('Base Price:', basePrice);
-            console.log('Form:', form);
+            const basePrice = parseInt(formToUpdate.getAttribute('data-product-price'));
+            const amount = parseInt(formToUpdate.querySelector('input[name="amount"]').value);
+            const size = formToUpdate.querySelector('input[name="size"]:checked');
+            const topping = formToUpdate.querySelector('input[name="topping"]:checked');
 
             let itemPrice = basePrice;
             let customizations = [];
@@ -520,14 +533,14 @@
 
             const totalPrice = itemPrice * amount;
 
-            const totalPriceElement = form.querySelector('#total-price');
+            const totalPriceElement = formToUpdate.querySelector('#total-price');
             if (totalPriceElement) {
                 totalPriceElement.textContent = formatRupiah(totalPrice);
             }
             
-            form.setAttribute('data-base-price', basePrice);
-            form.setAttribute('data-item-price', itemPrice);
-            form.setAttribute('data-customizations', JSON.stringify(customizations));
+            formToUpdate.setAttribute('data-base-price', basePrice);
+            formToUpdate.setAttribute('data-item-price', itemPrice);
+            formToUpdate.setAttribute('data-customizations', JSON.stringify(customizations));
         }
 
         // Function to add order
