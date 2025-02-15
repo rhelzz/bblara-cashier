@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TransaksiQris;
 use App\Models\TransaksiTunai;
+use App\Models\MenuBestSeller;
 
 class ReportOwnerController extends Controller
 {
@@ -16,7 +17,29 @@ class ReportOwnerController extends Controller
     {
         $qrisCount = TransaksiQris::count();
         $tunaiCount = TransaksiTunai::count();
-        return view('owner.report.index', compact('qrisCount', 'tunaiCount'));
+
+        // Get best seller data
+        $bestSellers = MenuBestSeller::select('product_ordered')
+            ->get()
+            ->flatMap(function ($item) {
+                return explode(', ', $item->product_ordered);
+            })
+            ->countBy()
+            ->sortDesc()
+            ->take(5); // Ambil 5 menu terlaris
+
+        // Hitung total transaksi untuk persentase
+        $totalOrders = $bestSellers->sum();
+        
+        // Tambahkan persentase ke data best seller
+        $bestSellersWithPercentage = $bestSellers->map(function ($count) use ($totalOrders) {
+            return [
+                'count' => $count,
+                'percentage' => round(($count / $totalOrders) * 100, 1)
+            ];
+        });
+
+        return view('owner.report.index', compact('qrisCount', 'tunaiCount', 'bestSellersWithPercentage'));
     }
 
     /**

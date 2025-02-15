@@ -61,10 +61,11 @@
                     </div>
                 </div>
 
+                <!-- Payment Method Comparison Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Chart Card -->
                     <div class="bg-white rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-semibold mb-4">Grafik Perbandingan</h2>
+                        <h2 class="text-xl font-semibold mb-4">Grafik Perbandingan Pembayaran</h2>
                         <div class="chart-container">
                             <canvas id="transactionChart"></canvas>
                         </div>
@@ -118,6 +119,45 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Best Seller Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Menu Best Seller</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Best Seller Chart -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Top 5 Menu Terlaris</h3>
+                            <div class="chart-container">
+                                <canvas id="bestSellerChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Best Seller Cards -->
+                        <div class="grid grid-cols-1 gap-4">
+                            @foreach($bestSellersWithPercentage as $menu => $data)
+                            <div class="stats-card bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="bg-gradient-to-r from-orange-400 to-orange-500 p-3 rounded-lg">
+                                            <i class="bi bi-cup-hot text-2xl text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-lg font-semibold">{{ $menu }}</h4>
+                                            <p class="text-gray-600">Terjual {{ $data['count'] }} kali</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-2xl font-bold text-orange-500">{{ $data['percentage'] }}%</span>
+                                        <div class="w-24 bg-gray-200 rounded-full h-2 mt-2">
+                                            <div class="bg-orange-500 rounded-full h-2" style="width: {{ $data['percentage'] }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -128,6 +168,7 @@
             sidebar.classList.toggle('hidden');
         }
 
+        // Payment Methods Chart
         const ctx = document.getElementById('transactionChart').getContext('2d');
         const transactionChart = new Chart(ctx, {
             type: 'bar',
@@ -202,9 +243,72 @@
                 }
             }
         });
-    </script>
 
-    <script>
+        // Best Seller Chart
+        const bestSellerCtx = document.getElementById('bestSellerChart').getContext('2d');
+        const bestSellerChart = new Chart(bestSellerCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [@foreach($bestSellersWithPercentage as $menu => $data) '{{ $menu }}', @endforeach],
+                datasets: [{
+                    data: [@foreach($bestSellersWithPercentage as $data) {{ $data['count'] }}, @endforeach],
+                    backgroundColor: [
+                        'rgba(225, 127, 18, 0.8)',
+                        'rgba(234, 88, 12, 0.8)',
+                        'rgba(249, 115, 22, 0.8)',
+                        'rgba(251, 146, 60, 0.8)',
+                        'rgba(253, 186, 116, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(225, 127, 18, 1)',
+                        'rgba(234, 88, 12, 1)',
+                        'rgba(249, 115, 22, 1)',
+                        'rgba(251, 146, 60, 1)',
+                        'rgba(253, 186, 116, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                family: 'Raleway',
+                                size: 12
+                            },
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            family: 'Raleway',
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: 'Raleway',
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                const dataset = tooltipItem.dataset;
+                                const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                const value = dataset.data[tooltipItem.dataIndex];
+                                const percentage = Math.round((value / total) * 100);
+                                return `${tooltipItem.label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
         function toggleDropdown(button) {
             const dropdownMenus = document.querySelectorAll(".dropdown-menu");
             const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
