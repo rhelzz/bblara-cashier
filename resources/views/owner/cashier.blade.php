@@ -349,6 +349,12 @@
                 <input type="hidden" name="timestamp" id="transaction_timestamp">
             </form>
 
+            <!-- Hidden form for best seller tracking -->
+            <form id="bestSellerForm" method="POST" action="{{ route('owner.menu-best-sellers.store') }}" style="display: none;">
+                @csrf
+                <input type="hidden" name="product_ordered" id="best_seller_products">
+            </form>
+
             <!-- Add this after the existing transactionForm -->
             <form id="transactionQRISForm" method="POST" action="{{ route('owner.transaksiqris.store') }}" style="display: none;">
                 @csrf
@@ -625,7 +631,34 @@
             document.getElementById('subtotal').textContent = formatRupiah(subtotal);
         }
 
-            // Updated processPayment function without payment method selection
+            // Function to process best seller data
+            async function processBestSellerData() {
+                const itemList = document.getElementById('item-list');
+                const items = itemList.querySelectorAll('.flex.flex-col');
+                let orderedProducts = [];
+                
+                items.forEach(item => {
+                    const productNameElement = item.querySelector('.font-semibold');
+                    if (productNameElement) {
+                        const fullText = productNameElement.textContent;
+                        const productName = fullText.split(' x')[0];
+                        const quantity = parseInt(fullText.split('x')[1]);
+                        
+                        // Add the product name to the array as many times as it was ordered
+                        for (let i = 0; i < quantity; i++) {
+                            orderedProducts.push(productName);
+                        }
+                    }
+                });
+
+                // Join the products with commas
+                const productsString = orderedProducts.join(', ');
+                
+                // Set the value in the hidden form
+                document.getElementById('best_seller_products').value = productsString;
+            }
+
+            // Updated processPayment function
             async function processPayment() {
                 const subtotalElement = document.getElementById('subtotal');
                 const subtotalText = subtotalElement.textContent;
@@ -640,7 +673,7 @@
                     return;
                 }
 
-                // Calculate total cost price
+                // Calculate total cost price and set up forms
                 let totalCostPrice = 0;
                 const itemList = document.getElementById('item-list');
                 const items = itemList.querySelectorAll('.flex.flex-col');
@@ -688,12 +721,15 @@
                 });
 
                 if (isConfirmed) {
-                    // Set form values
+                    // Prepare both forms
                     const subtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
                     document.getElementById('transaction_subtotal').value = subtotal;
                     document.getElementById('transaction_total_cost_price').value = totalCostPrice.toFixed(2);
                     document.getElementById('transaction_timestamp').value = timestamp;
-                    document.getElementById('transaction_payment_method').value = 'tunai'; // Set default payment method to tunai
+                    document.getElementById('transaction_payment_method').value = 'tunai';
+
+                    // Prepare best seller data
+                    await processBestSellerData();
 
                     // Show loading state
                     Swal.fire({
@@ -706,24 +742,41 @@
                         }
                     });
 
-                    // Submit the form
                     try {
-                        await document.getElementById('transactionForm').submit();
-                        
-                        // Show success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Payment Successful',
-                            text: 'Your transaction has been processed successfully!',
-                            confirmButtonColor: '#e17f12'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Optional: Redirect or refresh page
-                                // window.location.reload();
-                            }
-                        });
+                        // Create form data for both forms
+                        const transactionFormData = new FormData(document.getElementById('transactionForm'));
+                        const bestSellerFormData = new FormData(document.getElementById('bestSellerForm'));
+
+                        // Submit both forms using fetch
+                        const responses = await Promise.all([
+                            fetch(document.getElementById('transactionForm').action, {
+                                method: 'POST',
+                                body: transactionFormData
+                            }),
+                            fetch(document.getElementById('bestSellerForm').action, {
+                                method: 'POST',
+                                body: bestSellerFormData
+                            })
+                        ]);
+
+                        // Check if both submissions were successful
+                        const allSuccessful = responses.every(response => response.ok);
+
+                        if (allSuccessful) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Successful',
+                                text: 'Your transaction has been processed successfully!',
+                                confirmButtonColor: '#e17f12'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            throw new Error('One or more submissions failed');
+                        }
                     } catch (error) {
-                        // Show error message if something goes wrong
                         Swal.fire({
                             icon: 'error',
                             title: 'Payment Failed',
@@ -820,11 +873,14 @@
                 });
 
                 if (isConfirmed) {
-                    // Set form values for QRIS transaction
+                    // Prepare both forms
                     const subtotal = parseFloat(subtotalText.replace(/[^\d]/g, ''));
                     document.getElementById('transaction_qris_subtotal').value = subtotal;
                     document.getElementById('transaction_qris_total_cost_price').value = totalCostPrice.toFixed(2);
                     document.getElementById('transaction_qris_timestamp').value = timestamp;
+
+                    // Prepare best seller data
+                    await processBestSellerData();
 
                     // Show loading state
                     Swal.fire({
@@ -837,24 +893,41 @@
                         }
                     });
 
-                    // Submit the QRIS form
                     try {
-                        await document.getElementById('transactionQRISForm').submit();
-                        
-                        // Show success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'QRIS Payment Successful',
-                            text: 'Your QRIS transaction has been processed successfully!',
-                            confirmButtonColor: '#e17f12'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Optional: Redirect or refresh page
-                                // window.location.reload();
-                            }
-                        });
+                        // Create form data for both forms
+                        const qrisFormData = new FormData(document.getElementById('transactionQRISForm'));
+                        const bestSellerFormData = new FormData(document.getElementById('bestSellerForm'));
+
+                        // Submit both forms using fetch
+                        const responses = await Promise.all([
+                            fetch(document.getElementById('transactionQRISForm').action, {
+                                method: 'POST',
+                                body: qrisFormData
+                            }),
+                            fetch(document.getElementById('bestSellerForm').action, {
+                                method: 'POST',
+                                body: bestSellerFormData
+                            })
+                        ]);
+
+                        // Check if both submissions were successful
+                        const allSuccessful = responses.every(response => response.ok);
+
+                        if (allSuccessful) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'QRIS Payment Successful',
+                                text: 'Your QRIS transaction has been processed successfully!',
+                                confirmButtonColor: '#e17f12'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            throw new Error('One or more submissions failed');
+                        }
                     } catch (error) {
-                        // Show error message if something goes wrong
                         Swal.fire({
                             icon: 'error',
                             title: 'QRIS Payment Failed',

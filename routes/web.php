@@ -13,6 +13,7 @@ use App\Http\Controllers\Owner\StockOwnerController;
 use App\Http\Controllers\Owner\UserOwnerController;
 use App\Http\Controllers\TransaksiQrisController;
 use App\Http\Controllers\Owner\ProfileOwnerController;
+use App\Http\Controllers\Owner\MenuBestSellerOwnerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,6 +67,8 @@ Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () 
     Route::put('profile/update', [ProfileOwnerController::class, 'update'])->name('profile.update');
     Route::put('profile/password', [ProfileOwnerController::class, 'updatePassword'])->name('profile.password');
     Route::delete('profile/destroy', [ProfileOwnerController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('menu-best-sellers', MenuBestSellerOwnerController::class);
 });
 
 require __DIR__.'/auth.php';
