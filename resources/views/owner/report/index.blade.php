@@ -158,6 +158,101 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Hourly Analysis Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Analisis Waktu Transaksi</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Hourly Transaction Chart -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Grafik Transaksi per Jam</h3>
+                            <div class="chart-container">
+                                <canvas id="hourlyChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Peak Hours Analysis -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Jam Tersibuk</h3>
+                            <div class="space-y-4">
+                                @foreach($peakHours as $hour => $count)
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-lg font-semibold text-gray-800">
+                                                {{ sprintf('%02d:00', $hour) }} - {{ sprintf('%02d:00', $hour + 1) }}
+                                            </p>
+                                            <p class="text-gray-600">{{ $count }} Transaksi</p>
+                                        </div>
+                                        <div class="bg-blue-100 text-blue-800 p-3 rounded-full">
+                                            <i class="bi bi-clock text-2xl"></i>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-blue-600 rounded-full h-2" style="width: {{ ($count / max($peakHours)) * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Performance Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Performa Karyawan</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Employee Performance Chart -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Grafik Performa Karyawan</h3>
+                            <div class="chart-container">
+                                <canvas id="employeeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Top Employees List -->
+                        <div class="bg-white rounded-xl shadow-lg p-6">
+                            <h3 class="text-xl font-semibold mb-4">Top 5 Karyawan</h3>
+                            <div class="space-y-4">
+                                @foreach($topEmployees as $employee)
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="bg-gradient-to-r from-purple-500 to-blue-500 text-white h-10 w-10 rounded-full flex items-center justify-center font-bold">
+                                                {{ strtoupper(substr($employee['name'], 0, 1)) }}
+                                            </div>
+                                            <div>
+                                                <p class="text-lg font-semibold text-gray-800">{{ $employee['name'] }}</p>
+                                                <p class="text-sm text-gray-600">
+                                                    QRIS: {{ $employee['qris_count'] }} | Tunai: {{ $employee['tunai_count'] }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-2xl font-bold text-blue-600">{{ $employee['total_count'] }}</p>
+                                            <p class="text-sm text-gray-600">Transaksi</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                            <span>Kontribusi</span>
+                                            <span>{{ $employee['percentage'] }}%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-gradient-to-r from-purple-500 to-blue-500 rounded-full h-2" 
+                                                style="width: {{ $employee['percentage'] }}%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -339,6 +434,167 @@
                 dropdownArrow.classList.remove("rotate-180");
             }
         }
+    </script>
+    <script>
+        // Hourly Transaction Chart
+        const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+        const hourlyChart = new Chart(hourlyCtx, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($formattedHourlyData['labels']) !!},
+                datasets: [{
+                    label: 'QRIS',
+                    data: {!! json_encode($formattedHourlyData['qris']) !!},
+                    borderColor: 'rgba(147, 51, 234, 1)',
+                    backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2
+                }, {
+                    label: 'Tunai',
+                    data: {!! json_encode($formattedHourlyData['tunai']) !!},
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: 'Raleway'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Raleway'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Raleway',
+                                size: 12
+                            },
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            family: 'Raleway',
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: 'Raleway',
+                            size: 13
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <script>
+        // Employee Performance Chart
+        const employeeCtx = document.getElementById('employeeChart').getContext('2d');
+        const employeeChart = new Chart(employeeCtx, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($topEmployees->pluck('name')->toArray()) !!},
+                datasets: [{
+                    label: 'QRIS',
+                    data: {!! json_encode($topEmployees->pluck('qris_count')->toArray()) !!},
+                    backgroundColor: 'rgba(147, 51, 234, 0.8)',
+                    borderColor: 'rgba(147, 51, 234, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Tunai',
+                    data: {!! json_encode($topEmployees->pluck('tunai_count')->toArray()) !!},
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: 'Raleway'
+                            }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            font: {
+                                family: 'Raleway'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                family: 'Raleway',
+                                size: 12
+                            },
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            family: 'Raleway',
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            family: 'Raleway',
+                            size: 13
+                        },
+                        callbacks: {
+                            afterBody: function(tooltipItems) {
+                                const index = tooltipItems[0].dataIndex;
+                                const totalTransactions = {!! json_encode($topEmployees->pluck('total_count')->toArray()) !!}[index];
+                                const percentage = {!! json_encode($topEmployees->pluck('percentage')->toArray()) !!}[index];
+                                return `Total: ${totalTransactions} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
