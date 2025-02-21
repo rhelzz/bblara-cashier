@@ -150,6 +150,30 @@
             right: 0;
             background: linear-gradient(to left, rgba(255,255,255,0.9), rgba(255,255,255,0));
         }
+
+        /* Add these styles to your existing style section */
+        .edit-modal {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .edit-modal::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .edit-modal::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .edit-modal::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     
         /* Tambahkan CSS untuk print */
         /* Update the print media query in your style section */
@@ -723,7 +747,19 @@
                             <li class="font-semibold lg:text-xs">Total: ${formatRupiah(totalPrice)}</li>
                         </ul>
                     </div>
-                    <button type="button" onclick="removeItem(this)" class="ml-2 text-red-500 hover:text-red-700 text-xs">×</button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="editItem(this)" 
+                            class="text-blue-500 hover:text-blue-700 text-xs"
+                            data-product-id="${productId}"
+                            data-amount="${amount}"
+                            data-size="${size.value}"
+                            data-sugar="${sugar.value}"
+                            data-ice="${ice.value}"
+                            data-topping="${topping.value}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" onclick="removeItem(this)" class="text-red-500 hover:text-red-700 text-xs">×</button>
+                    </div>
                 </div>
             `;
 
@@ -744,6 +780,169 @@
 
             // Show success message
             toastr.success('Item added to order successfully!', 'Success');
+        }
+
+        function editItem(button) {
+            const item = button.closest('.flex.flex-col');
+            const productId = button.getAttribute('data-product-id');
+            const productForm = document.querySelector(`form[data-product-id="${productId}"]`);
+            
+            if (!productForm) {
+                toastr.error('Product form not found!', 'Error');
+                return;
+            }
+
+            // Get the current values from the receipt item
+            const amount = button.getAttribute('data-amount');
+            const size = button.getAttribute('data-size');
+            const sugar = button.getAttribute('data-sugar');
+            const ice = button.getAttribute('data-ice');
+            const topping = button.getAttribute('data-topping');
+
+            // Create a SweetAlert2 modal for editing
+            Swal.fire({
+                title: 'Edit Order',
+                html: `
+                    <div class="space-y-4">
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700 mb-1">Amount:</label>
+                            <div class="flex items-center justify-center space-x-2">
+                                <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full text-white" 
+                                    onclick="this.nextElementSibling.stepDown()">-</button>
+                                <input type="number" id="edit-amount" value="${amount}" min="1" 
+                                    class="w-20 text-center border rounded">
+                                <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full text-white" 
+                                    onclick="this.previousElementSibling.stepUp()">+</button>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700 mb-1">Size:</label>
+                            <div class="flex justify-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-size" value="M" ${size === 'M' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">M</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-size" value="L" ${size === 'L' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">L</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700 mb-1">Sugar Level:</label>
+                            <div class="flex justify-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-sugar" value="25" ${sugar === '25' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">25%</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-sugar" value="50" ${sugar === '50' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">50%</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-sugar" value="75" ${sugar === '75' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">75%</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700 mb-1">Ice Level:</label>
+                            <div class="flex justify-center space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-ice" value="25" ${ice === '25' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">25%</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-ice" value="50" ${ice === '50' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">50%</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-ice" value="75" ${ice === '75' ? 'checked' : ''} 
+                                        class="text-[#e17f12]">
+                                    <span class="ml-2">75%</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700 mb-1">Topping:</label>
+                            <div class="flex flex-col space-y-2">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-topping" value="No Topping" 
+                                        ${topping === 'No Topping' ? 'checked' : ''} class="text-[#e17f12]">
+                                    <span class="ml-2">No Topping</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-topping" value="Susu Oat" 
+                                        ${topping === 'Susu Oat' ? 'checked' : ''} class="text-[#e17f12]">
+                                    <span class="ml-2">Susu Oat (+5K)</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="edit-topping" value="Espresso" 
+                                        ${topping === 'Espresso' ? 'checked' : ''} class="text-[#e17f12]">
+                                    <span class="ml-2">Espresso (+4K)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#e17f12',
+                cancelButtonColor: '#d33',
+                preConfirm: () => {
+                    return {
+                        amount: document.getElementById('edit-amount').value,
+                        size: document.querySelector('input[name="edit-size"]:checked').value,
+                        sugar: document.querySelector('input[name="edit-sugar"]:checked').value,
+                        ice: document.querySelector('input[name="edit-ice"]:checked').value,
+                        topping: document.querySelector('input[name="edit-topping"]:checked').value
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Update the form with new values
+                    const newValues = result.value;
+                    
+                    // Set the amount in the original form
+                    productForm.querySelector('input[name="amount"]').value = newValues.amount;
+                    
+                    // Set size
+                    productForm.querySelector(`input[name="size_${productId}"][value="${newValues.size}"]`).checked = true;
+                    
+                    // Set sugar
+                    productForm.querySelector(`input[name="sugar_${productId}"][value="${newValues.sugar}"]`).checked = true;
+                    
+                    // Set ice
+                    productForm.querySelector(`input[name="ice_${productId}"][value="${newValues.ice}"]`).checked = true;
+                    
+                    // Set topping
+                    productForm.querySelector(`input[name="topping_${productId}"][value="${newValues.topping}"]`).checked = true;
+                    
+                    // Update the price
+                    updatePrice(productForm);
+                    
+                    // Remove the old item
+                    item.remove();
+                    
+                    // Add the updated item
+                    const event = new Event('submit');
+                    productForm.dispatchEvent(event);
+                    
+                    // Show success message
+                    toastr.success('Order updated successfully!', 'Success');
+                    
+                    // Update the subtotal
+                    updateSubtotal();
+                }
+            });
         }
 
         // Function to remove item
