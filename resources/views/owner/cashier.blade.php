@@ -80,6 +80,76 @@
         .main-content {
             margin-right: 16.666667%; /* Same as receipt section width */
         }
+
+        /* Add these styles to your existing style tag */
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #6B7280;
+            background-color: #F3F4F6;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+
+        .filter-btn:hover {
+            background-color: #E5E7EB;
+            color: #374151;
+        }
+
+        .filter-btn.active {
+            background-color: #ffffff;
+            color: #e17f12;
+            border-color: #e17f12;
+            font-weight: 500;
+        }
+
+        #filterContainer {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            padding: 0.25rem 0;
+        }
+
+        #filterContainer::-webkit-scrollbar {
+            display: none;
+        }
+
+        #scrollLeft, #scrollRight {
+            opacity: 0.8;
+            transition: all 0.2s ease;
+        }
+
+        #scrollLeft:hover, #scrollRight:hover {
+            opacity: 1;
+        }
+
+        #filterMenu {
+            will-change: transform;
+            gap: 0.5rem;
+        }
+
+        /* Add smooth shadow indication for scroll */
+        .scroll-shadow-left::before,
+        .scroll-shadow-right::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .scroll-shadow-left::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0));
+        }
+
+        .scroll-shadow-right::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(255,255,255,0.9), rgba(255,255,255,0));
+        }
     
         /* Tambahkan CSS untuk print */
         /* Update the print media query in your style section */
@@ -187,9 +257,36 @@
                 </div>
             </div>
 
+            <!-- Filter Menu Section -->
+            <div class="px-4 pt-1 pb-2">
+                <div class="relative">
+                    <div class="flex items-center">
+                        <!-- Left Arrow -->
+                        <button id="scrollLeft" class="hidden p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        
+                        <!-- Filter Container -->
+                        <div id="filterContainer" class="flex-1 overflow-hidden">
+                            <div id="filterMenu" class="flex gap-2 transition-all duration-300 ease-in-out">
+                                <button class="filter-btn active" data-category="all">
+                                    All Menu
+                                </button>
+                                <!-- Dynamic filter buttons will be added here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Right Arrow -->
+                        <button id="scrollRight" class="hidden p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main content section -->
             @foreach ($products as $row)
-            <form class="p-6" method="POST" action="#" onsubmit="addToOrder(event)" data-product-name="{{ $row->name }}" data-product-price="{{ $row->price }}" data-cost-price="{{ $row->cost_price }}">
+            <form class="p-6" method="POST" action="#" onsubmit="addToOrder(event)" data-product-name="{{ $row->name }}" data-product-price="{{ $row->price }}" data-cost-price="{{ $row->cost_price }}" data-product-id="{{ $row->id }}">
                     <div class="w-full p-6 bg-white rounded shadow-lg">
                         <header class="mb-4">
                             <h2 class="font-bold text-xl text-green-700">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}. {{ $row->name }} (Rp {{ number_format($row->price, 0, ',', '.') }})</h2>
@@ -219,12 +316,12 @@
                                     <label class="block font-medium text-gray-700 mb-2">Size:</label>
                                     <div class="flex items-center justify-center space-x-4">
                                         <div class="relative">
-                                            <input type="radio" name="size" id="size-m" value="M" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="size-m" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">M</label>
+                                            <input type="radio" name="size_{{ $row->id }}" id="size-m-{{ $row->id }}" value="M" class="sr-only peer" onchange="updatePrice()" checked>
+                                            <label for="size-m-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">M</label>
                                         </div>
                                         <div class="relative">
-                                            <input type="radio" name="size" id="size-l" value="L" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="size-l" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">L</label>
+                                            <input type="radio" name="size_{{ $row->id }}" id="size-l-{{ $row->id }}" value="L" class="sr-only peer" onchange="updatePrice()">
+                                            <label for="size-l-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">L</label>
                                         </div>
                                     </div>
                                 </div>
@@ -234,16 +331,16 @@
                                     <label class="block font-medium text-gray-700 mb-2">Sugar:</label>
                                     <div class="flex items-center justify-center space-x-4">
                                         <div class="relative">
-                                            <input type="radio" name="sugar" id="sugar-25" value="25" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="sugar-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
+                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
+                                            <label for="sugar-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
                                         </div>
                                         <div class="relative">
-                                            <input type="radio" name="sugar" id="sugar-50" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="sugar-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
+                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
+                                            <label for="sugar-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
                                         </div>
                                         <div class="relative">
-                                            <input type="radio" name="sugar" id="sugar-75" value="75" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="sugar-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
+                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
+                                            <label for="sugar-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
                                         </div>
                                     </div>
                                 </div>
@@ -253,16 +350,16 @@
                                     <label class="block font-medium text-gray-700 mb-2">Ice:</label>
                                     <div class="flex items-center justify-center space-x-4">
                                         <div class="relative">
-                                            <input type="radio" name="ice" id="ice-25" value="25" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="ice-25" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
+                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
+                                            <label for="ice-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
                                         </div>
                                         <div class="relative">
-                                            <input type="radio" name="ice" id="ice-50" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="ice-50" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
+                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
+                                            <label for="ice-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
                                         </div>
                                         <div class="relative">
-                                            <input type="radio" name="ice" id="ice-75" value="75" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="ice-75" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
+                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
+                                            <label for="ice-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
                                         </div>
                                     </div>
                                 </div>
@@ -274,22 +371,22 @@
                                         <label class="block font-medium text-gray-700 mb-2">Customized :</label>
                                         <div class="flex flex-col space-y-2">
                                             <div class="relative">
-                                                <input type="radio" name="topping" id="topping-none" value="No Topping" class="sr-only peer" onchange="updatePrice()" checked>
-                                                <label for="topping-none" 
+                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-none-{{ $row->id }}" value="No Topping" class="sr-only peer" onchange="updatePrice()" checked>
+                                                <label for="topping-none-{{ $row->id }}" 
                                                     class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                     No Topping
                                                 </label>
                                             </div>
                                             <div class="relative">
-                                                <input type="radio" name="topping" id="topping-oat" value="Susu Oat" class="sr-only peer" onchange="updatePrice()">
-                                                <label for="topping-oat" 
+                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-oat-{{ $row->id }}" value="Susu Oat" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="topping-oat-{{ $row->id }}" 
                                                     class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                     Susu Oat +(5K)
                                                 </label>
                                             </div>
                                             <div class="relative">
-                                                <input type="radio" name="topping" id="topping-espresso" value="Espresso" class="sr-only peer" onchange="updatePrice()">
-                                                <label for="topping-espresso" 
+                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-espresso-{{ $row->id }}" value="Espresso" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="topping-espresso-{{ $row->id }}" 
                                                     class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
                                                     Espresso +(4K)
                                                 </label>
@@ -301,7 +398,7 @@
                                     <div class="p-4 bg-white rounded shadow flex flex-col w-auto h-40">
                                         <div class="text-center">
                                             <label class="block font-medium text-gray-700 mb-2">Total Price:</label>
-                                            <span id="total-price" class="text-2xl font-bold text-[#e17f12] block mb-3 lg:text-base"></span>
+                                            <span id="total-price-{{ $row->id }}" class="text-2xl font-bold text-[#e17f12] block mb-3 lg:text-base"></span>
                                         </div>
                                         <button type="submit" class="w-full px-6 py-2 bg-[#005281] text-white rounded hover:bg-[#004371] transition-colors lg:text-sm">
                                             Add to Order
@@ -447,6 +544,30 @@
             });
         });
 
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for radio inputs
+            document.querySelectorAll('form[data-product-id]').forEach(form => {
+                const productId = form.getAttribute('data-product-id');
+                
+                // Add listeners for all radio inputs (size, sugar, ice, and topping)
+                const radioGroups = ['size', 'sugar', 'ice', 'topping'];
+                
+                radioGroups.forEach(group => {
+                    form.querySelectorAll(`input[name="${group}_${productId}"]`).forEach(input => {
+                        input.addEventListener('change', function() {
+                            updatePrice(form);
+                        });
+                    });
+                });
+
+                // Also add listener for amount changes
+                form.querySelector('input[name="amount"]').addEventListener('input', function() {
+                    updatePrice(form);
+                });
+            });
+        });
+
         // Function to toggle dropdown
         function toggleDropdown(button) {
             const dropdownMenus = document.querySelectorAll(".dropdown-menu");
@@ -516,8 +637,11 @@
 
             const basePrice = parseInt(formToUpdate.getAttribute('data-product-price'));
             const amount = parseInt(formToUpdate.querySelector('input[name="amount"]').value);
-            const size = formToUpdate.querySelector('input[name="size"]:checked');
-            const topping = formToUpdate.querySelector('input[name="topping"]:checked');
+            const productId = formToUpdate.getAttribute('data-product-id');
+            
+            // Use the product ID to find the correct radio buttons
+            const size = formToUpdate.querySelector(`input[name="size_${productId}"]:checked`);
+            const topping = formToUpdate.querySelector(`input[name="topping_${productId}"]:checked`);
 
             let itemPrice = basePrice;
             let customizations = [];
@@ -539,7 +663,8 @@
 
             const totalPrice = itemPrice * amount;
 
-            const totalPriceElement = formToUpdate.querySelector('#total-price');
+            // Update to use product-specific total price element
+            const totalPriceElement = formToUpdate.querySelector(`#total-price-${productId}`);
             if (totalPriceElement) {
                 totalPriceElement.textContent = formatRupiah(totalPrice);
             }
@@ -554,18 +679,24 @@
             event.preventDefault();
 
             const form = event.target;
+            const productId = form.getAttribute('data-product-id');
             const productName = form.getAttribute('data-product-name');
             const basePrice = parseInt(form.getAttribute('data-base-price'));
             const itemPrice = parseInt(form.getAttribute('data-item-price'));
             const customizations = JSON.parse(form.getAttribute('data-customizations') || '[]');
 
-            const size = form.querySelector('input[name="size"]:checked');
-            const sugar = form.querySelector('input[name="sugar"]:checked');
-            const ice = form.querySelector('input[name="ice"]:checked');
-            const topping = form.querySelector('input[name="topping"]:checked');
+            const size = form.querySelector(`input[name="size_${productId}"]:checked`);
+            const sugar = form.querySelector(`input[name="sugar_${productId}"]:checked`);
+            const ice = form.querySelector(`input[name="ice_${productId}"]:checked`);
+            const topping = form.querySelector(`input[name="topping_${productId}"]:checked`);
 
             if (!size || !sugar || !ice || !topping) {
-                alert('Please select all options before adding to order');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Options',
+                    text: 'Please select all options before adding to order',
+                    confirmButtonColor: '#e17f12'
+                });
                 return;
             }
 
@@ -601,12 +732,18 @@
 
             updateSubtotal();
 
+            // Reset form with correct IDs
             form.querySelector('input[name="amount"]').value = 1;
-            form.querySelector('#size-m').checked = true;
-            form.querySelector('#sugar-50').checked = true;
-            form.querySelector('#ice-50').checked = true;
-            form.querySelector('#topping-none').checked = true;
-            updatePrice.call(form);
+            form.querySelector(`#size-m-${productId}`).checked = true;
+            form.querySelector(`#sugar-50-${productId}`).checked = true;
+            form.querySelector(`#ice-50-${productId}`).checked = true;
+            form.querySelector(`#topping-none-${productId}`).checked = true;
+            
+            // Update price after resetting
+            updatePrice(form);
+
+            // Show success message
+            toastr.success('Item added to order successfully!', 'Success');
         }
 
         // Function to remove item
@@ -1082,6 +1219,128 @@
                 }
             });
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get unique product names/categories from the forms
+            const products = Array.from(document.querySelectorAll('form[data-product-name]')).map(form => {
+                return form.getAttribute('data-product-name');
+            });
+
+            // Get unique names and sort them alphabetically
+            const uniqueProducts = [...new Set(products)].sort();
+
+            // Get the filter menu container
+            const filterMenu = document.getElementById('filterMenu');
+            
+            // Add filter buttons for each unique product
+            uniqueProducts.forEach(product => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn';
+                button.setAttribute('data-category', product);
+                button.textContent = product;
+                filterMenu.appendChild(button);
+            });
+
+            // Scroll functionality
+            const scrollLeftBtn = document.getElementById('scrollLeft');
+            const scrollRightBtn = document.getElementById('scrollRight');
+            const filterContainer = document.getElementById('filterContainer');
+
+            let scrollPosition = 0;
+            const scrollAmount = 200;
+
+            function updateScrollButtons() {
+                const canScrollLeft = scrollPosition > 0;
+                const canScrollRight = scrollPosition < filterMenu.scrollWidth - filterContainer.clientWidth;
+
+                scrollLeftBtn.style.display = canScrollLeft ? 'block' : 'none';
+                scrollRightBtn.style.display = canScrollRight ? 'block' : 'none';
+
+                // Update scroll shadows
+                filterContainer.classList.toggle('scroll-shadow-left', canScrollLeft);
+                filterContainer.classList.toggle('scroll-shadow-right', canScrollRight);
+            }
+
+            function smoothScroll(target) {
+                const start = scrollPosition;
+                const change = target - start;
+                const duration = 300;
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const progress = Math.min(timeElapsed / duration, 1);
+
+                    // Easing function
+                    const easeProgress = 0.5 * (1 - Math.cos(Math.PI * progress));
+                    
+                    scrollPosition = start + (change * easeProgress);
+                    filterMenu.style.transform = `translateX(-${scrollPosition}px)`;
+
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(animation);
+                    } else {
+                        updateScrollButtons();
+                    }
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            scrollLeftBtn.addEventListener('click', () => {
+                const target = Math.max(scrollPosition - scrollAmount, 0);
+                smoothScroll(target);
+            });
+
+            scrollRightBtn.addEventListener('click', () => {
+                const maxScroll = filterMenu.scrollWidth - filterContainer.clientWidth;
+                const target = Math.min(scrollPosition + scrollAmount, maxScroll);
+                smoothScroll(target);
+            });
+
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+
+                    // Add active class to clicked button
+                    button.classList.add('active');
+
+                    const category = button.getAttribute('data-category');
+                    const productForms = document.querySelectorAll('form[data-product-name]');
+
+                    productForms.forEach(form => {
+                        const productName = form.getAttribute('data-product-name');
+                        const productCard = form.closest('.p-6');
+
+                        if (category === 'all' || productName === category) {
+                            productCard.style.display = '';
+                        } else {
+                            productCard.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Initial setup
+            updateScrollButtons();
+
+            // Update on window resize
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    updateScrollButtons();
+                }, 100);
+            });
+
+            // Set initial active state
+            filterButtons[0].classList.add('active');
+        });
     </script>
 
 </body>
