@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Karyawan;
 
-use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class DashboardKaryawanController extends Controller
+class CashierKaryawanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view("karyawan.dashboard");
+
+        $products = Product::all();
+
+        return view("karyawan.cashier", compact("products"));
     }
 
     /**

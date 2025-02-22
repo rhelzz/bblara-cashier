@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         if($request->user()->usertype == 'karyawan'){
-            return redirect('/karyawan/dashboard');
+            return redirect('/karyawan/cashier');
         }
 
         if($request->user()->usertype == 'inventaris'){
