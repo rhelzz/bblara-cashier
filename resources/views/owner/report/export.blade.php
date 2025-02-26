@@ -17,9 +17,9 @@
             <td>{{ $report['transaksi_tunai_count'] }}</td>
             <td>{{ $report['transaksi_qris_count'] }}</td>
             <td>{{ $report['total_transaksi'] }}</td>
-            <td>{{ number_format($report['modal'], 0, ',', '.') }}</td>
-            <td>{{ number_format($report['pendapatan'], 0, ',', '.') }}</td>
-            <td>{{ number_format($report['keuntungan'], 0, ',', '.') }}</td>
+            <td>{{ $report['modal'] }}</td>
+            <td>{{ $report['pendapatan'] }}</td>
+            <td>{{ $report['keuntungan'] }}</td>
         </tr>
         @endforeach
         <tr>
@@ -27,9 +27,9 @@
             <td><strong>{{ $totalData['total_transaksi_tunai'] }}</strong></td>
             <td><strong>{{ $totalData['total_transaksi_qris'] }}</strong></td>
             <td><strong>{{ $totalData['total_transaksi'] }}</strong></td>
-            <td><strong>{{ number_format($totalData['total_modal'], 0, ',', '.') }}</strong></td>
-            <td><strong>{{ number_format($totalData['total_pendapatan'], 0, ',', '.') }}</strong></td>
-            <td><strong>{{ number_format($totalData['total_keuntungan'], 0, ',', '.') }}</strong></td>
+            <td><strong>{{ $totalData['total_modal'] }}</strong></td>
+            <td><strong>{{ $totalData['total_pendapatan'] }}</strong></td>
+            <td><strong>{{ $totalData['total_keuntungan'] }}</strong></td>
         </tr>
     </tbody>
 </table>
