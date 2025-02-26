@@ -74,59 +74,61 @@
                   @endif
           
                   <div class="bg-white rounded-lg shadow overflow-hidden">
-                      <table class="min-w-full divide-y divide-gray-200">
-                          <thead class="bg-gray-50">
-                              <tr>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Modal</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Jual</th>
-                                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                              </tr>
-                          </thead>
-                          <tbody class="bg-white divide-y divide-gray-200">
-                              @foreach($products as $product)
+                      <div class="overflow-x-auto">
+                          <table class="min-w-full divide-y divide-gray-200">
+                              <thead class="bg-gray-50">
                                   <tr>
-                                      <td class="px-6 py-4 whitespace-nowrap">
-                                          <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" 
-                                              class="h-16 w-16 object-cover rounded">
-                                      </td>
-                                      <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($product->cost_price, 0, ',', '.') }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
-                                      <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex space-x-2">
-                                            {{-- Button Lihat --}}
-                                            <a href="{{ route('owner.product.show', $product) }}" 
-                                               class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                                <i class="bi bi-eye mr-1"></i>
-                                                Lihat
-                                            </a>
-                                    
-                                            {{-- Button Edit --}}
-                                            <a href="{{ route('owner.product.edit', $product) }}" 
-                                               class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                                <i class="bi bi-pencil mr-1"></i>
-                                                Edit
-                                            </a>
-                                    
-                                            {{-- Button Hapus --}}
-                                            <form action="{{ route('owner.product.destroy', $product) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')"
-                                                        class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                    <i class="bi bi-trash mr-1"></i>
-                                                    Hapus
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Modal</th>
+                                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga Jual</th>
+                                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                   </tr>
-                              @endforeach
-                          </tbody>
-                      </table>
+                              </thead>
+                              <tbody class="bg-white divide-y divide-gray-200">
+                                  @foreach($products as $product)
+                                      <tr>
+                                          <td class="px-6 py-4 whitespace-nowrap">
+                                              <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}" 
+                                                  class="h-16 w-16 object-cover rounded">
+                                          </td>
+                                          <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
+                                          <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($product->cost_price, 0, ',', '.') }}</td>
+                                          <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                                          <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex space-x-2">
+                                                {{-- Button Lihat --}}
+                                                <a href="{{ route('owner.product.show', $product) }}" 
+                                                   class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                    <i class="bi bi-eye mr-1"></i>
+                                                    Lihat
+                                                </a>
+                                        
+                                                {{-- Button Edit --}}
+                                                <a href="{{ route('owner.product.edit', $product) }}" 
+                                                   class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                                    <i class="bi bi-pencil mr-1"></i>
+                                                    Edit
+                                                </a>
+                                        
+                                                {{-- Button Hapus --}}
+                                                <form action="{{ route('owner.product.destroy', $product) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" 
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')"
+                                                            class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                        <i class="bi bi-trash mr-1"></i>
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                  @endforeach
+                              </tbody>
+                          </table>
+                      </div>
                   </div>
               </div>
           </div>
@@ -135,39 +137,45 @@
 
       <!-- Scripts -->
       <script>
-        function toggleDropdown(button) {
-        const dropdownMenus = document.querySelectorAll(".dropdown-menu");
-        const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
-  
-        // Tutup semua dropdown kecuali yang dipilih
-        dropdownMenus.forEach((menu) => {
-          if (menu !== button.nextElementSibling) {
-            menu.classList.add("max-h-0");
-            menu.classList.remove("max-h-40");
-          }
-        });
-  
-        // Atur semua panah kecuali yang dipilih
-        dropdownArrows.forEach((arrow) => {
-          if (arrow !== button.querySelector("i.bi-chevron-down")) {
-            arrow.classList.remove("rotate-180");
-          }
-        });
-  
-        // Toggle dropdown yang dipilih
-        const dropdownMenu = button.nextElementSibling;
-        const dropdownArrow = button.querySelector("i.bi-chevron-down");
-  
-        if (dropdownMenu.classList.contains("max-h-0")) {
-          dropdownMenu.classList.remove("max-h-0");
-          dropdownMenu.classList.add("max-h-40");
-          dropdownArrow.classList.add("rotate-180");
-        } else {
-          dropdownMenu.classList.add("max-h-0");
-          dropdownMenu.classList.remove("max-h-40");
-          dropdownArrow.classList.remove("rotate-180");
+        // Add toggleSidebar function
+        function toggleSidebar() {
+          const sidebar = document.querySelector('.sidebar');
+          sidebar.classList.toggle('-translate-x-full');
         }
-      }
+        
+        function toggleDropdown(button) {
+          const dropdownMenus = document.querySelectorAll(".dropdown-menu");
+          const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
+    
+          // Tutup semua dropdown kecuali yang dipilih
+          dropdownMenus.forEach((menu) => {
+            if (menu !== button.nextElementSibling) {
+              menu.classList.add("max-h-0");
+              menu.classList.remove("max-h-40");
+            }
+          });
+    
+          // Atur semua panah kecuali yang dipilih
+          dropdownArrows.forEach((arrow) => {
+            if (arrow !== button.querySelector("i.bi-chevron-down")) {
+              arrow.classList.remove("rotate-180");
+            }
+          });
+    
+          // Toggle dropdown yang dipilih
+          const dropdownMenu = button.nextElementSibling;
+          const dropdownArrow = button.querySelector("i.bi-chevron-down");
+    
+          if (dropdownMenu.classList.contains("max-h-0")) {
+            dropdownMenu.classList.remove("max-h-0");
+            dropdownMenu.classList.add("max-h-40");
+            dropdownArrow.classList.add("rotate-180");
+          } else {
+            dropdownMenu.classList.add("max-h-0");
+            dropdownMenu.classList.remove("max-h-40");
+            dropdownArrow.classList.remove("rotate-180");
+          }
+        }
       </script>
     </body>
 </html>

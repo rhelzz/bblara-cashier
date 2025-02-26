@@ -53,68 +53,70 @@
                             </div>
                         @endif
                         <div class="bg-white rounded-lg shadow overflow-hidden">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bahan Baku</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berat</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Berat</th> <!-- New header -->
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubah Qty</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach($stocks as $stock)
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->id }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->raw_material }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight . ' ' . $stock->unit }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->qty }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight * $stock->qty . ' ' . $stock->unit }}</td> <!-- New column for Total Berat -->
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex space-x-2">
-                                                    <a href="{{ route('owner.stock.show', $stock) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                                        <i class="bi bi-eye mr-1"></i>
-                                                        Lihat
-                                                    </a>
-                                                    <a href="{{ route('owner.stock.edit', $stock) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                                        <i class="bi bi-pencil mr-1"></i>
-                                                        Edit
-                                                    </a>
-                                                    <form action="{{ route('owner.stock.destroy', $stock) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus stok ini?')" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                            <i class="bi bi-trash mr-1"></i>
-                                                            Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex space-x-2">
-                                                    <form action="{{ route('owner.stock.increment', $stock->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                                            <i class="bi bi-plus"></i>
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('owner.stock.decrement', $stock->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                                            <i class="bi bi-dash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bahan Baku</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Berat</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kuantitas</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Berat</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ubah Qty</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @foreach($stocks as $stock)
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $stock->id }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $stock->raw_material }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight . ' ' . $stock->unit }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $stock->qty }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">{{ $stock->weight * $stock->qty . ' ' . $stock->unit }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex space-x-2">
+                                                        <a href="{{ route('owner.stock.show', $stock) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                                            <i class="bi bi-eye mr-1"></i>
+                                                            Lihat
+                                                        </a>
+                                                        <a href="{{ route('owner.stock.edit', $stock) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                                            <i class="bi bi-pencil mr-1"></i>
+                                                            Edit
+                                                        </a>
+                                                        <form action="{{ route('owner.stock.destroy', $stock) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus stok ini?')" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                                <i class="bi bi-trash mr-1"></i>
+                                                                Hapus
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex space-x-2">
+                                                        <form action="{{ route('owner.stock.increment', $stock->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-green-500 text-white text-sm font-medium rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                                                <i class="bi bi-plus"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form action="{{ route('owner.stock.decrement', $stock->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                                <i class="bi bi-dash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,6 +124,11 @@
         </div>
     </div>
     <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+        
         function toggleDropdown(button) {
             const dropdownMenus = document.querySelectorAll(".dropdown-menu");
             const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
