@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Owner;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TransaksiQris;
-use App\Models\TransaksiTunai;
 use App\Models\MenuBestSeller;
+use App\Models\TransaksiTunai;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Exports\DailyIncomeExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Collection;
 
 class ReportOwnerController extends Controller
 {
@@ -142,6 +146,122 @@ class ReportOwnerController extends Controller
             'topEmployees',  // Add topEmployees to the view
             'employeeCollection' // Add full employee collection if needed
         ));
+    }
+
+    /**
+     * Display the daily income report.
+     */
+    public function dailyIncome(Request $request)
+    {
+        // Default to last 7 days if no dates selected
+        $startDate = $request->input('startDate', Carbon::now()->subDays(6)->format('Y-m-d'));
+        $endDate = $request->input('endDate', Carbon::now()->format('Y-m-d'));
+        
+        // Convert to Carbon objects for manipulation
+        $startCarbon = Carbon::parse($startDate)->startOfDay();
+        $endCarbon = Carbon::parse($endDate)->endOfDay();
+
+        $dailyReports = $this->generateDailyReport($startCarbon, $endCarbon);
+        $totalData = [
+            'total_modal' => $dailyReports->sum('modal'),
+            'total_pendapatan' => $dailyReports->sum('pendapatan'),
+            'total_keuntungan' => $dailyReports->sum('keuntungan'),
+            'total_transaksi_tunai' => $dailyReports->sum('transaksi_tunai_count'),
+            'total_transaksi_qris' => $dailyReports->sum('transaksi_qris_count'),
+            'total_transaksi' => $dailyReports->sum('total_transaksi')
+        ];
+
+        return view('owner.report.daily-income', compact('dailyReports', 'totalData', 'startDate', 'endDate'));
+    }
+
+    /**
+     * Export the daily income report to Excel.
+     */
+    public function exportExcel(Request $request) 
+    {
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+        
+        $startCarbon = Carbon::parse($startDate)->startOfDay();
+        $endCarbon = Carbon::parse($endDate)->endOfDay();
+
+        $dailyReports = $this->generateDailyReport($startCarbon, $endCarbon);
+        $totalData = [
+            'total_modal' => $dailyReports->sum('modal'),
+            'total_pendapatan' => $dailyReports->sum('pendapatan'),
+            'total_keuntungan' => $dailyReports->sum('keuntungan'),
+            'total_transaksi_tunai' => $dailyReports->sum('transaksi_tunai_count'),
+            'total_transaksi_qris' => $dailyReports->sum('transaksi_qris_count'),
+            'total_transaksi' => $dailyReports->sum('total_transaksi')
+        ];
+
+        $fileName = 'laporan_pendapatan_' . $startDate . '_hingga_' . $endDate . '.xlsx';
+        
+        return Excel::download(
+            new DailyIncomeExport($dailyReports, $totalData, $startDate, $endDate), 
+            $fileName
+        );
+    }
+
+    /**
+     * Generate the daily income report data.
+     * 
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @return Collection
+     */
+    private function generateDailyReport($startDate, $endDate)
+    {
+        // Get the date range
+        $dateRange = new \DatePeriod(
+            $startDate,
+            new \DateInterval('P1D'),
+            $endDate->addDay() // Add one day to include the end date
+        );
+        
+        $dailyReports = collect();
+        
+        foreach ($dateRange as $date) {
+            $currentDate = $date->format('Y-m-d');
+            
+            // Get Transaksi QRIS for current date
+            $qrisTransactions = TransaksiQris::whereBetween('timestamp', [
+                $currentDate . ' 00:00:00', 
+                $currentDate . ' 23:59:59'
+            ])->get();
+            
+            // Get Transaksi Tunai for current date
+            $tunaiTransactions = TransaksiTunai::whereBetween('timestamp', [
+                $currentDate . ' 00:00:00', 
+                $currentDate . ' 23:59:59'
+            ])->get();
+            
+            // Hitung modal menggunakan total_cost_price
+            $modalQris = $qrisTransactions->sum('total_cost_price');
+            $modalTunai = $tunaiTransactions->sum('total_cost_price');
+            $totalModal = $modalQris + $modalTunai;
+            
+            // Hitung pendapatan menggunakan subtotal
+            $pendapatanQris = $qrisTransactions->sum('subtotal');
+            $pendapatanTunai = $tunaiTransactions->sum('subtotal');
+            $totalPendapatan = $pendapatanQris + $pendapatanTunai;
+            
+            // Hitung keuntungan
+            $totalKeuntungan = $totalPendapatan - $totalModal;
+            
+            $dailyReports->push([
+                'tanggal' => Carbon::parse($currentDate)->format('d M Y'),
+                'tanggal_raw' => $currentDate,
+                'modal' => $totalModal,
+                'pendapatan' => $totalPendapatan,
+                'keuntungan' => $totalKeuntungan,
+                'transaksi_tunai_count' => $tunaiTransactions->count(),
+                'transaksi_qris_count' => $qrisTransactions->count(),
+                'total_transaksi' => $tunaiTransactions->count() + $qrisTransactions->count()
+            ]);
+        }
+        
+        return $dailyReports;
     }
 
     /**

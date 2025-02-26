@@ -74,7 +74,9 @@ Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () 
     Route::resource('user', UserOwnerController::class);
     
     // Report
-    Route::resource('report', ReportOwnerController::class);
+    Route::get('report/daily-income', [ReportOwnerController::class, 'dailyIncome'])->name('report.daily-income');
+    Route::get('report/export-excel', [ReportOwnerController::class, 'exportExcel'])->name('report.export-excel');
+    Route::resource('report', ReportOwnerController::class);   
     
     // Notifications
     Route::resource('notification', NotificationOwnerController::class);

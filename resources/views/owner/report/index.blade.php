@@ -55,6 +55,9 @@
                 <div class="flex items-center justify-between mb-6">
                     <h1 class="text-3xl font-bold text-gray-800">Perbandingan Transaksi</h1>
                     <div class="flex space-x-2">
+                        <a href="{{ route('owner.report.daily-income') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="bi bi-cash-coin me-2"></i>Laporan Pendapatan
+                        </a>
                         <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="bi bi-download me-2"></i>Export
                         </button>
