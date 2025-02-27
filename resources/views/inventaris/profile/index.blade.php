@@ -58,12 +58,12 @@
         </button>
 
         <!-- Sidebar -->
-        <x-navbar-karyawan></x-navbar-karyawan>
+        <x-navbar-inventaris></x-navbar-inventaris>
 
         <!-- Main Content -->
         <div class="flex-1 lg:w-5/6">
             {{-- Navbar Top --}}
-            <x-navbar-top-karyawan></x-navbar-top-karyawan>
+            <x-navbar-top-inventaris></x-navbar-top-inventaris>
 
             <!-- Content Wrapper -->
             <div class="p-4 lg:px-8 py-0">
@@ -98,7 +98,7 @@
                             <!-- Profile Information -->
                             <div class="bg-white p-8 rounded-lg shadow-md">
                                 <h3 class="text-xl font-semibold text-gray-700 mb-6">Profile Information</h3>
-                                <form action="{{ route('karyawan.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                                <form action="{{ route('inventaris.profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                     @csrf
                                     @method('PUT')
 
@@ -159,7 +159,7 @@
                             <!-- Update Password -->
                             <div class="bg-white p-8 rounded-lg shadow-md">
                                 <h3 class="text-xl font-semibold text-gray-700 mb-6">Update Password</h3>
-                                <form action="{{ route('karyawan.profile.password') }}" method="POST" class="space-y-6">
+                                <form action="{{ route('inventaris.profile.password') }}" method="POST" class="space-y-6">
                                     @csrf
                                     @method('PUT')
 
@@ -217,7 +217,7 @@
                                             </div>
                                         </div>
 
-                                        <form action="{{ route('karyawan.profile.destroy') }}" method="POST" class="mt-5">
+                                        <form action="{{ route('inventaris.profile.destroy') }}" method="POST" class="mt-5">
                                             @csrf
                                             @method('DELETE')
                                             

@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         if($request->user()->usertype == 'inventaris'){
-            return redirect('/inventaris/dashboard');
+            return redirect('/inventaris/stock');
         }
 
         return redirect()->intended(route('dashboard', absolute: false));

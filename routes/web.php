@@ -13,9 +13,12 @@ use App\Http\Controllers\Owner\ProfileOwnerController;
 use App\Http\Controllers\Owner\DashboardOwnerController;
 use App\Http\Controllers\Owner\NotificationOwnerController;
 use App\Http\Controllers\Karyawan\CashierKaryawanController;
-use App\Http\Controllers\Karyawan\NotificationKaryawanController;
 use App\Http\Controllers\Karyawan\ProfileKaryawanController;
 use App\Http\Controllers\Owner\MenuBestSellerOwnerController;
+use App\Http\Controllers\Inventaris\StockInventarisController;
+use App\Http\Controllers\Inventaris\ProfileInventarisController;
+use App\Http\Controllers\Karyawan\NotificationKaryawanController;
+use App\Http\Controllers\Inventaris\NotificationInventarisController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -47,6 +50,26 @@ Route::middleware(['auth'])->prefix('karyawan')->name('karyawan.')->group(functi
     Route::get('notifications/unread-count', [NotificationKaryawanController::class, 'unreadCount']);
     Route::post('notifications/mark-as-read', [NotificationKaryawanController::class, 'markAsRead']);
     Route::post('notifications/clear-all', [NotificationKaryawanController::class, 'clearAll']);
+});
+
+Route::middleware(['auth'])->prefix('inventaris')->name('inventaris.')->group(function (){
+
+    // Stock
+    Route::resource('stock', StockInventarisController::class);
+    Route::patch('stock/increment/{id}', [StockInventarisController::class, 'incrementQty'])->name('stock.increment');
+    Route::patch('stock/decrement/{id}', [StockInventarisController::class, 'decrementQty'])->name('stock.decrement');
+
+    // Profile
+    Route::get('profile', [ProfileInventarisController::class, 'index'])->name('profile.index');
+    Route::put('profile/update', [ProfileInventarisController::class, 'update'])->name('profile.update');
+    Route::put('profile/password', [ProfileInventarisController::class, 'updatePassword'])->name('profile.password');
+    Route::delete('profile/destroy', [ProfileInventarisController::class, 'destroy'])->name('profile.destroy');
+
+    // Notifications
+    Route::resource('notification', NotificationInventarisController::class);
+    Route::get('notifications/unread-count', [NotificationInventarisController::class, 'unreadCount']);
+    Route::post('notifications/mark-as-read', [NotificationInventarisController::class, 'markAsRead']);
+    Route::post('notifications/clear-all', [NotificationInventarisController::class, 'clearAll']);
 });
 
 // Owner Routes
