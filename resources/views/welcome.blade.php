@@ -18,9 +18,19 @@
     <!-- Authenticated User Message -->
     <div class="text-center mb-6">
       <p class="text-lg font-medium text-gray-700">You are already logged in.</p>
-      <a href="{{ route('owner.dashboard.index') }}" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005281] hover:bg-[#153c53] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-        Go to Dashboard
-      </a>
+      @if(Auth::user()->usertype == 'owner')
+        <a href="{{ route('owner.dashboard.index') }}" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005281] hover:bg-[#153c53] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Go to Dashboard
+        </a>
+      @elseif(Auth::user()->usertype == 'karyawan')
+        <a href="{{ route('karyawan.cashier.index') }}" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005281] hover:bg-[#153c53] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Go to Cashier
+        </a>
+      @elseif(Auth::user()->usertype == 'inventaris')
+        <a href="{{ route('inventaris.stock.index') }}" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#005281] hover:bg-[#153c53] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Go to Stock Management
+        </a>
+      @endif
     </div>
     @else
     <!-- Session Status -->

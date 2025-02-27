@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth'])->prefix('karyawan')->name('karyawan.')->group(function (){
+Route::middleware(['auth', 'karyawan'])->prefix('karyawan')->name('karyawan.')->group(function (){
 
     // Cashier
     Route::resource('cashier', CashierKaryawanController::class);
@@ -52,7 +52,7 @@ Route::middleware(['auth'])->prefix('karyawan')->name('karyawan.')->group(functi
     Route::post('notifications/clear-all', [NotificationKaryawanController::class, 'clearAll']);
 });
 
-Route::middleware(['auth'])->prefix('inventaris')->name('inventaris.')->group(function (){
+Route::middleware(['auth', 'inventaris'])->prefix('inventaris')->name('inventaris.')->group(function (){
 
     // Stock
     Route::resource('stock', StockInventarisController::class);
@@ -73,7 +73,7 @@ Route::middleware(['auth'])->prefix('inventaris')->name('inventaris.')->group(fu
 });
 
 // Owner Routes
-Route::middleware(['auth'])->prefix('owner')->name('owner.')->group(function () {
+Route::middleware(['auth', 'owner'])->prefix('owner')->name('owner.')->group(function () {
     
     // Dashboard
     Route::resource('dashboard', DashboardOwnerController::class);
