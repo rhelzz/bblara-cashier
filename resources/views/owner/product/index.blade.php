@@ -36,6 +36,35 @@
       .hover-link:hover .nav-text::after {
         width: 100%;
       }
+
+      /* Tambahkan di dalam tag style yang sudah ada */
+      .pagination-button {
+          @apply px-3 py-1 border rounded-lg transition-all duration-200;
+      }
+
+      .pagination-button.active {
+          @apply bg-orange-500 text-white border-orange-500;
+      }
+
+      .pagination-button:not(.active) {
+          @apply hover:bg-orange-50 text-gray-700;
+      }
+
+      /* Animation untuk row tabel */
+      tbody tr {
+          animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+          from {
+              opacity: 0;
+              transform: translateY(-10px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
     </style>
   </head>
   <body class="bg-gray-100">
@@ -74,6 +103,41 @@
                   @endif
           
                   <div class="bg-white rounded-lg shadow overflow-hidden">
+                      <div class="p-6 border-b border-gray-100">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Search Box -->
+                            <div class="flex-grow">
+                                <label for="searchInput" class="text-sm font-medium text-gray-600 mb-2 block">
+                                    <i class="bi bi-search mr-1"></i>Cari Produk
+                                </label>
+                                <div class="relative">
+                                    <input
+                                        type="text"
+                                        id="searchInput"
+                                        class="w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200"
+                                        placeholder="Cari berdasarkan nama produk..."
+                                    >
+                                    <div class="absolute left-3 top-3 text-gray-400">
+                                        <i class="bi bi-search"></i>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <!-- Entries Per Page -->
+                            <div class="md:w-48">
+                                <label for="entriesPerPage" class="text-sm font-medium text-gray-600 mb-2 block">
+                                    <i class="bi bi-table mr-1"></i>Tampilkan Entri
+                                </label>
+                                <select id="entriesPerPage" 
+                                        class="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 bg-white">
+                                    <option value="5" selected>5 entri</option>
+                                    <option value="10">10 entri</option>
+                                    <option value="25">25 entri</option>
+                                    <option value="50">50 entri</option>
+                                </select>
+                            </div>
+                        </div>
+                      </div>
                       <div class="overflow-x-auto">
                           <table class="min-w-full divide-y divide-gray-200">
                               <thead class="bg-gray-50">
@@ -101,7 +165,7 @@
                                                 <a href="{{ route('owner.product.show', $product) }}" 
                                                    class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                                     <i class="bi bi-eye mr-1"></i>
-                                                    Lihat
+                                                    Analisis
                                                 </a>
                                         
                                                 {{-- Button Edit --}}
@@ -128,6 +192,32 @@
                                   @endforeach
                               </tbody>
                           </table>
+
+                          <div class="px-6 py-4 border-t border-gray-200">
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div class="text-sm text-gray-700">
+                                    Menampilkan 
+                                    <span class="font-semibold text-orange-500" id="startEntry">1</span> 
+                                    sampai 
+                                    <span class="font-semibold text-orange-500" id="endEntry">10</span> 
+                                    dari 
+                                    <span class="font-semibold text-orange-500" id="totalEntries">0</span> 
+                                    produk
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button id="prevPage" class="px-4 py-2 border rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200 flex items-center">
+                                        <i class="bi bi-chevron-left mr-1"></i> Sebelumnya
+                                    </button>
+                                    <div id="pageNumbers" class="flex space-x-1">
+                                        <!-- Page numbers will be inserted here -->
+                                    </div>
+                                    <button id="nextPage" class="px-4 py-2 border rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors duration-200 flex items-center">
+                                        Selanjutnya <i class="bi bi-chevron-right ml-1"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                       </div>
                   </div>
               </div>
@@ -176,6 +266,143 @@
             dropdownArrow.classList.remove("rotate-180");
           }
         }
+      </script>
+      <script>
+        // State untuk tabel dan pagination
+        const tableState = {
+            currentPage: 1,
+            entriesPerPage: 5,
+            allRows: [],
+            filteredData: []
+        };
+
+        // Fungsi inisialisasi tabel
+        function initializeTable() {
+            const tbody = document.querySelector('tbody');
+            tableState.allRows = Array.from(tbody.querySelectorAll('tr'));
+            tableState.filteredData = tableState.allRows;
+            
+            // Set total entries
+            document.getElementById('totalEntries').textContent = tableState.filteredData.length;
+            
+            updateTable();
+        }
+
+        // Fungsi update tabel
+        function updateTable() {
+            const tbody = document.querySelector('tbody');
+            const startIndex = (tableState.currentPage - 1) * tableState.entriesPerPage;
+            const endIndex = startIndex + tableState.entriesPerPage;
+            const paginatedData = tableState.filteredData.slice(startIndex, endIndex);
+            
+            // Simpan total row sebelum mengosongkan tbody
+            const totalRow = tbody.querySelector('tr:last-child');
+            
+            // Clear existing rows kecuali total row
+            tbody.innerHTML = '';
+            
+            // Add paginated rows
+            paginatedData.forEach(row => {
+                tbody.appendChild(row.cloneNode(true));
+            });
+            
+            updatePaginationControls();
+            updatePaginationInfo();
+        }
+
+        // Fungsi update controls pagination
+        function updatePaginationControls() {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const maxPage = Math.ceil(tableState.filteredData.length / tableState.entriesPerPage);
+            
+            pageNumbers.innerHTML = '';
+            
+            for (let i = 1; i <= maxPage; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.classList.add('pagination-button');
+                
+                if (i === tableState.currentPage) {
+                    button.classList.add('active');
+                }
+                
+                button.addEventListener('click', () => handlePageChange(i));
+                pageNumbers.appendChild(button);
+            }
+            
+            document.getElementById('prevPage').disabled = tableState.currentPage === 1;
+            document.getElementById('nextPage').disabled = tableState.currentPage === maxPage;
+        }
+
+        // Fungsi update info pagination
+        function updatePaginationInfo() {
+            const startEntry = tableState.filteredData.length === 0 ? 0 : 
+                (tableState.currentPage - 1) * tableState.entriesPerPage + 1;
+            const endEntry = Math.min(tableState.currentPage * tableState.entriesPerPage, 
+                tableState.filteredData.length);
+            
+            document.getElementById('startEntry').textContent = startEntry;
+            document.getElementById('endEntry').textContent = endEntry;
+        }
+
+        // Fungsi handle perubahan halaman
+        function handlePageChange(newPage) {
+            const maxPage = Math.ceil(tableState.filteredData.length / tableState.entriesPerPage);
+            if (newPage >= 1 && newPage <= maxPage) {
+                tableState.currentPage = newPage;
+                updateTable();
+            }
+        }
+
+        // Initialize saat dokumen dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTable();
+            
+            // Event listeners untuk tombol prev/next
+            document.getElementById('prevPage').addEventListener('click', () => {
+                handlePageChange(tableState.currentPage - 1);
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', () => {
+                handlePageChange(tableState.currentPage + 1);
+            });
+        });
+
+        // Fungsi handle search
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            tableState.filteredData = tableState.allRows.filter(row => {
+                const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                return name.includes(searchTerm);
+            });
+            
+            tableState.currentPage = 1;
+            updateTable();
+        }
+
+        // Fungsi handle perubahan jumlah entri
+        function handleEntriesChange(e) {
+            tableState.entriesPerPage = parseInt(e.target.value);
+            tableState.currentPage = 1;
+            updateTable();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          initializeTable();
+          
+          // Event listeners untuk tombol prev/next
+          document.getElementById('prevPage').addEventListener('click', () => {
+              handlePageChange(tableState.currentPage - 1);
+          });
+          
+          document.getElementById('nextPage').addEventListener('click', () => {
+              handlePageChange(tableState.currentPage + 1);
+          });
+
+          // Event listeners untuk search dan entries per page
+          document.getElementById('searchInput').addEventListener('input', handleSearch);
+          document.getElementById('entriesPerPage').addEventListener('change', handleEntriesChange);
+      });
       </script>
     </body>
 </html>
