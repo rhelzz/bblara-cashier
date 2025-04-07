@@ -579,11 +579,13 @@
         });
     </script>
     <script>
-        // User Statistics Handling
         const userStats = {
             data: new Map(),
+            currentPage: 0,
+            cardsPerPage: 3,
             
             initialize() {
+                this.currentPage = 0;
                 this.calculateStats();
                 this.renderCards();
                 this.attachEventListeners();
@@ -651,7 +653,16 @@
                     return a[0].localeCompare(b[0]);
                 });
 
-                statsArray.forEach(([userName, stats]) => {
+                // Calculate start and end index for current page
+                const startIndex = this.currentPage * this.cardsPerPage;
+                const endIndex = Math.min(startIndex + this.cardsPerPage, statsArray.length);
+                const currentPageStats = statsArray.slice(startIndex, endIndex);
+
+                // Create wrapper for cards
+                const cardsWrapper = document.createElement('div');
+                cardsWrapper.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 col-span-full';
+
+                currentPageStats.forEach(([userName, stats]) => {
                     const card = document.createElement('div');
                     const isTotal = stats.isTotal;
                     
@@ -707,8 +718,46 @@
                         });
                     }
 
-                    container.appendChild(card);
+                    cardsWrapper.appendChild(card);
                 });
+
+                container.appendChild(cardsWrapper);
+
+                // Add dot navigation below the cards
+                const navigationDiv = document.createElement('div');
+                navigationDiv.className = 'col-span-full flex items-center justify-center mt-6 space-x-3'; // Added margin-top (mt-6)
+
+                // Calculate total pages
+                const totalPages = Math.ceil(statsArray.length / this.cardsPerPage);
+
+                // Create dots for each page
+                for (let i = 0; i < totalPages; i++) {
+                    const dotWrapper = document.createElement('div');
+                    dotWrapper.className = 'relative group';
+
+                    const dot = document.createElement('button');
+                    dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-200 ${
+                        i === this.currentPage 
+                            ? 'bg-orange-500 w-4' // Active dot
+                            : 'bg-gray-300 hover:bg-gray-400' // Inactive dot
+                    }`;
+
+                    // Add tooltip showing page number
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200';
+                    tooltip.textContent = `Page ${i + 1}`;
+
+                    dot.addEventListener('click', () => {
+                        this.currentPage = i;
+                        this.renderCards();
+                    });
+
+                    dotWrapper.appendChild(tooltip);
+                    dotWrapper.appendChild(dot);
+                    navigationDiv.appendChild(dotWrapper);
+                }
+
+                container.appendChild(navigationDiv);
             },
 
             attachEventListeners() {
@@ -728,7 +777,6 @@
         // Initialize user stats when document is loaded
         document.addEventListener('DOMContentLoaded', function() {
             // After table initialization
-            const existingDOMContentLoaded = document.addEventListener;
             setTimeout(() => {
                 userStats.initialize();
             }, 100);
