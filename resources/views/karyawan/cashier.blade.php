@@ -1672,21 +1672,31 @@
         });
     </script>
     <script>
-        // Add this to your existing JavaScript, before the closing </body> tag
         document.addEventListener('DOMContentLoaded', function() {
             const viewToggle = document.getElementById('view-toggle');
             const productsContainer = document.getElementById('products-container');
             const cardViewContainer = document.getElementById('card-view-container');
             
+            // Load saved view mode state
+            const savedViewMode = localStorage.getItem('viewMode');
+            if (savedViewMode === 'card') {
+                viewToggle.checked = true;
+                productsContainer.style.display = 'none';
+                cardViewContainer.style.display = 'block';
+            }
+            
+            // Add event listener for toggle changes
             viewToggle.addEventListener('change', function() {
                 if (this.checked) {
-                    // Show card view
+                    // Card view
                     productsContainer.style.display = 'none';
                     cardViewContainer.style.display = 'block';
+                    localStorage.setItem('viewMode', 'card');
                 } else {
-                    // Show detailed view
+                    // Detailed view
                     productsContainer.style.display = 'block';
                     cardViewContainer.style.display = 'none';
+                    localStorage.setItem('viewMode', 'detailed');
                 }
             });
         });
