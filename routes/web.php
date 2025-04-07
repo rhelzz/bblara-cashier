@@ -18,6 +18,7 @@ use App\Http\Controllers\Owner\MenuBestSellerOwnerController;
 use App\Http\Controllers\Inventaris\StockInventarisController;
 use App\Http\Controllers\Inventaris\ProfileInventarisController;
 use App\Http\Controllers\Karyawan\NotificationKaryawanController;
+use App\Http\Controllers\Karyawan\MenuBestSellerKaryawanController;
 use App\Http\Controllers\Inventaris\NotificationInventarisController;
 
 Route::get('/', function () {
@@ -34,10 +35,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Karyawan routes
 Route::middleware(['auth', 'karyawan'])->prefix('karyawan')->name('karyawan.')->group(function (){
 
     // Cashier
     Route::resource('cashier', CashierKaryawanController::class);
+
+    // Transactions
+    Route::resource('transaksitunai', TransaksiTunaiController::class);
+    Route::resource('transaksiqris', TransaksiQrisController::class);
+
+    Route::resource('menu-best-sellers', MenuBestSellerKaryawanController::class);
 
     // Profile
     Route::get('profile', [ProfileKaryawanController::class, 'index'])->name('profile.index');
@@ -52,6 +60,7 @@ Route::middleware(['auth', 'karyawan'])->prefix('karyawan')->name('karyawan.')->
     Route::post('notifications/clear-all', [NotificationKaryawanController::class, 'clearAll']);
 });
 
+// Inventaris Route
 Route::middleware(['auth', 'inventaris'])->prefix('inventaris')->name('inventaris.')->group(function (){
 
     // Stock

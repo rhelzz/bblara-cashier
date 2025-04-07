@@ -174,8 +174,90 @@
         .edit-modal::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        /* Updated styles */
+        .card-view {
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important; /* Changed to 5 columns */
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+            background-color: white;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card-image {
+            height: 150px;
+            overflow: hidden;
+        }
+
+        .product-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card-details {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #005281;
+        }
+
+        .product-card-price {
+            color: #e17f12;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-card-action {
+            margin-top: auto;
+        }
+
+        /* Updated media queries */
+        @media (max-width: 1600px) {
+            .card-view {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 1280px) {
+            .card-view {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .card-view {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .card-view {
+                grid-template-columns: repeat(1, 1fr) !important;
+            }
+        }
     
-        /* Tambahkan CSS untuk print */
         /* Update the print media query in your style section */
         @media print {
             /* Hide all elements initially */
@@ -281,6 +363,21 @@
                 </div>
             </div>
 
+            <!-- Add this right after the search bar section (around line 282) -->
+            <div class="px-4 pt-1 pb-2 flex justify-between items-center">
+                <div class="flex items-center">
+                    <span class="mr-2 text-gray-700 font-medium">View Mode:</span>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <span class="mr-2 text-sm text-gray-700">Detailed</span>
+                        <div class="relative">
+                            <input type="checkbox" id="view-toggle" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-blue-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#e17f12]"></div>
+                        </div>
+                        <span class="ml-2 text-sm text-gray-700">Quick Cards</span>
+                    </label>
+                </div>
+            </div>
+
             <!-- Filter Menu Section -->
             <div class="px-4 pt-1 pb-2">
                 <div class="relative">
@@ -308,132 +405,165 @@
                 </div>
             </div>
 
-            <!-- Main content section -->
-            @foreach ($products as $row)
-            <form class="p-6" method="POST" action="#" onsubmit="addToOrder(event)" data-product-name="{{ $row->name }}" data-product-price="{{ $row->price }}" data-cost-price="{{ $row->cost_price }}" data-product-id="{{ $row->id }}">
-                    <div class="w-full p-6 bg-white rounded shadow-lg">
-                        <header class="mb-4">
-                            <h2 class="font-bold text-xl text-green-700">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}. {{ $row->name }} (Rp {{ number_format($row->price, 0, ',', '.') }})</h2>
-                        </header>
-                    
-                        <!-- Kontainer untuk gambar dan kontrol -->
-                        <div class="flex gap-6">
-                            <!-- Gambar -->
-                            <figure class="w-1/3">
-                                <img src="{{ Storage::url($row->image_path) }}" alt="Macchiato Milk Tea" class="w-56 h-56 object-cover object-center">
-                            </figure>
-                    
-                            <!-- Kontrol -->
-                            <div class="w-2/3 grid grid-cols-2 gap-4">
-                                <!-- Amount -->
-                                <div class="p-4 bg-white rounded shadow">
-                                    <label class="block font-medium text-gray-700 mb-2">Amount:</label>
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white font-bold lg:h-10 lg:w-10 lg:text-sm" onclick="decrementAmount()">-</button>
-                                        <input type="text" name="amount" value="1" class="w-10 text-center border rounded h-12">
-                                        <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white lg:h-10 lg:w-10 lg:text-sm" onclick="incrementAmount()">+</button>
-                                    </div>
-                                </div>
-                    
-                                <!-- Size -->
-                                <div class="p-4 bg-white rounded shadow">
-                                    <label class="block font-medium text-gray-700 mb-2">Size:</label>
-                                    <div class="flex items-center justify-center space-x-4">
-                                        <div class="relative">
-                                            <input type="radio" name="size_{{ $row->id }}" id="size-m-{{ $row->id }}" value="M" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="size-m-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">M</label>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="radio" name="size_{{ $row->id }}" id="size-l-{{ $row->id }}" value="L" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="size-l-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">L</label>
-                                        </div>
-                                    </div>
-                                </div>
-                    
-                                <!-- Sugar -->
-                                <div class="p-4 bg-white rounded shadow">
-                                    <label class="block font-medium text-gray-700 mb-2">Sugar:</label>
-                                    <div class="flex items-center justify-center space-x-4">
-                                        <div class="relative">
-                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="sugar-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="sugar-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="radio" name="sugar_{{ $row->id }}" id="sugar-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="sugar-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
-                                        </div>
-                                    </div>
-                                </div>
-                    
-                                <!-- Ice -->
-                                <div class="p-4 bg-white rounded shadow">
-                                    <label class="block font-medium text-gray-700 mb-2">Ice:</label>
-                                    <div class="flex items-center justify-center space-x-4">
-                                        <div class="relative">
-                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="ice-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
-                                            <label for="ice-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
-                                        </div>
-                                        <div class="relative">
-                                            <input type="radio" name="ice_{{ $row->id }}" id="ice-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
-                                            <label for="ice-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
-                                        </div>
-                                    </div>
-                                </div>
-                    
-                                <!-- Add Total Price and Topping Section -->
-                                <div class="col-span-2 grid grid-cols-2 gap-4 mt-4">
-                                    <!-- Topping Section -->
+            <div id="products-container">
+                <!-- Main content section -->
+                @foreach ($products as $row)
+                <form class="p-6" method="POST" action="#" onsubmit="addToOrder(event)" data-product-name="{{ $row->name }}" data-product-price="{{ $row->price }}" data-cost-price="{{ $row->cost_price }}" data-product-id="{{ $row->id }}">
+                        <div class="w-full p-6 bg-white rounded shadow-lg">
+                            <header class="mb-4">
+                                <h2 class="font-bold text-xl text-green-700">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}. {{ $row->name }} (Rp {{ number_format($row->price, 0, ',', '.') }})</h2>
+                            </header>
+                        
+                            <!-- Kontainer untuk gambar dan kontrol -->
+                            <div class="flex gap-6">
+                                <!-- Gambar -->
+                                <figure class="w-1/3">
+                                    <img src="{{ Storage::url($row->image_path) }}" alt="Macchiato Milk Tea" class="w-56 h-56 object-cover object-center">
+                                </figure>
+                        
+                                <!-- Kontrol -->
+                                <div class="w-2/3 grid grid-cols-2 gap-4">
+                                    <!-- Amount -->
                                     <div class="p-4 bg-white rounded shadow">
-                                        <label class="block font-medium text-gray-700 mb-2">Customized :</label>
-                                        <div class="flex flex-col space-y-2">
+                                        <label class="block font-medium text-gray-700 mb-2">Amount:</label>
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white font-bold lg:h-10 lg:w-10 lg:text-sm" onclick="decrementAmount()">-</button>
+                                            <input type="text" name="amount" value="1" class="w-10 text-center border rounded h-12">
+                                            <button type="button" class="px-3 py-1 bg-[#e17f12] rounded-full w-12 h-12 shadow text-white lg:h-10 lg:w-10 lg:text-sm" onclick="incrementAmount()">+</button>
+                                        </div>
+                                    </div>
+                        
+                                    <!-- Size -->
+                                    <div class="p-4 bg-white rounded shadow">
+                                        <label class="block font-medium text-gray-700 mb-2">Size:</label>
+                                        <div class="flex items-center justify-center space-x-4">
                                             <div class="relative">
-                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-none-{{ $row->id }}" value="No Topping" class="sr-only peer" onchange="updatePrice()" checked>
-                                                <label for="topping-none-{{ $row->id }}" 
-                                                    class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
-                                                    No Topping
-                                                </label>
+                                                <input type="radio" name="size_{{ $row->id }}" id="size-m-{{ $row->id }}" value="M" class="sr-only peer" onchange="updatePrice()" checked>
+                                                <label for="size-m-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">M</label>
                                             </div>
                                             <div class="relative">
-                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-oat-{{ $row->id }}" value="Susu Oat" class="sr-only peer" onchange="updatePrice()">
-                                                <label for="topping-oat-{{ $row->id }}" 
-                                                    class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
-                                                    Susu Oat +(5K)
-                                                </label>
-                                            </div>
-                                            <div class="relative">
-                                                <input type="radio" name="topping_{{ $row->id }}" id="topping-espresso-{{ $row->id }}" value="Espresso" class="sr-only peer" onchange="updatePrice()">
-                                                <label for="topping-espresso-{{ $row->id }}" 
-                                                    class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
-                                                    Espresso +(4K)
-                                                </label>
+                                                <input type="radio" name="size_{{ $row->id }}" id="size-l-{{ $row->id }}" value="L" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="size-l-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">L</label>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- Total Price and Add to Order Section -->
-                                    <div class="p-4 bg-white rounded shadow flex flex-col w-auto h-40">
-                                        <div class="text-center">
-                                            <label class="block font-medium text-gray-700 mb-2">Total Price:</label>
-                                            <span id="total-price-{{ $row->id }}" class="text-2xl font-bold text-[#e17f12] block mb-3 lg:text-base"></span>
+                        
+                                    <!-- Sugar -->
+                                    <div class="p-4 bg-white rounded shadow">
+                                        <label class="block font-medium text-gray-700 mb-2">Sugar:</label>
+                                        <div class="flex items-center justify-center space-x-4">
+                                            <div class="relative">
+                                                <input type="radio" name="sugar_{{ $row->id }}" id="sugar-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="sugar-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="radio" name="sugar_{{ $row->id }}" id="sugar-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
+                                                <label for="sugar-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="radio" name="sugar_{{ $row->id }}" id="sugar-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="sugar-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
+                                            </div>
                                         </div>
-                                        <button type="submit" class="w-full px-6 py-2 bg-[#005281] text-white rounded hover:bg-[#004371] transition-colors lg:text-sm">
-                                            Add to Order
-                                        </button>
+                                    </div>
+                        
+                                    <!-- Ice -->
+                                    <div class="p-4 bg-white rounded shadow">
+                                        <label class="block font-medium text-gray-700 mb-2">Ice:</label>
+                                        <div class="flex items-center justify-center space-x-4">
+                                            <div class="relative">
+                                                <input type="radio" name="ice_{{ $row->id }}" id="ice-25-{{ $row->id }}" value="25" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="ice-25-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">25%</label>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="radio" name="ice_{{ $row->id }}" id="ice-50-{{ $row->id }}" value="50" class="sr-only peer" onchange="updatePrice()" checked>
+                                                <label for="ice-50-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">50%</label>
+                                            </div>
+                                            <div class="relative">
+                                                <input type="radio" name="ice_{{ $row->id }}" id="ice-75-{{ $row->id }}" value="75" class="sr-only peer" onchange="updatePrice()">
+                                                <label for="ice-75-{{ $row->id }}" class="flex items-center justify-center px-3 py-1 border rounded-full w-12 h-12 text-center cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 lg:h-10 lg:w-10 lg:text-sm">75%</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                                    <!-- Add Total Price and Topping Section -->
+                                    <div class="col-span-2 grid grid-cols-2 gap-4 mt-4">
+                                        <!-- Topping Section -->
+                                        <div class="p-4 bg-white rounded shadow">
+                                            <label class="block font-medium text-gray-700 mb-2">Customized :</label>
+                                            <div class="flex flex-col space-y-2">
+                                                <div class="relative">
+                                                    <input type="radio" name="topping_{{ $row->id }}" id="topping-none-{{ $row->id }}" value="No Topping" class="sr-only peer" onchange="updatePrice()" checked>
+                                                    <label for="topping-none-{{ $row->id }}" 
+                                                        class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
+                                                        No Topping
+                                                    </label>
+                                                </div>
+                                                <div class="relative">
+                                                    <input type="radio" name="topping_{{ $row->id }}" id="topping-oat-{{ $row->id }}" value="Susu Oat" class="sr-only peer" onchange="updatePrice()">
+                                                    <label for="topping-oat-{{ $row->id }}" 
+                                                        class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
+                                                        Susu Oat +(5K)
+                                                    </label>
+                                                </div>
+                                                <div class="relative">
+                                                    <input type="radio" name="topping_{{ $row->id }}" id="topping-espresso-{{ $row->id }}" value="Espresso" class="sr-only peer" onchange="updatePrice()">
+                                                    <label for="topping-espresso-{{ $row->id }}" 
+                                                        class="block w-full px-4 py-2 border rounded cursor-pointer peer-checked:bg-[#e17f12] peer-checked:text-white hover:bg-gray-50 text-center lg:text-sm">
+                                                        Espresso +(4K)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Total Price and Add to Order Section -->
+                                        <div class="p-4 bg-white rounded shadow flex flex-col w-auto h-40">
+                                            <div class="text-center">
+                                                <label class="block font-medium text-gray-700 mb-2">Total Price:</label>
+                                                <span id="total-price-{{ $row->id }}" class="text-2xl font-bold text-[#e17f12] block mb-3 lg:text-base"></span>
+                                            </div>
+                                            <button type="submit" class="w-full px-6 py-2 bg-[#005281] text-white rounded hover:bg-[#004371] transition-colors lg:text-sm">
+                                                Add to Order
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </form>
+                @endforeach
+            </div>
+
+            <!-- Add after the original products container, before the </section> tag (around line 437) -->
+            <div id="card-view-container" style="display:none;">
+                <div class="grid grid-cols-5 gap-4 p-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+                    @foreach ($products as $row)
+                    <div class="product-card">
+                        <div class="product-card-image">
+                            <img src="{{ Storage::url($row->image_path) }}" alt="{{ $row->name }}">
+                        </div>
+                        <div class="product-card-details">
+                            <h3 class="product-card-title">{{ $row->name }}</h3>
+                            <div class="product-card-price">Rp {{ number_format($row->price, 0, ',', '.') }}</div>
+                            
+                            <!-- Quick order amount control -->
+                            <div class="flex items-center justify-center my-3">
+                                <button type="button" class="px-3 py-1 bg-gray-200 rounded-l" onclick="quickDecrementAmount(this)">-</button>
+                                <span class="px-3 py-1 bg-white border-t border-b card-amount">1</span>
+                                <button type="button" class="px-3 py-1 bg-gray-200 rounded-r" onclick="quickIncrementAmount(this)">+</button>
+                            </div>
+                            
+                            <div class="product-card-action">
+                                <button type="button" class="w-full px-4 py-2 bg-[#e17f12] text-white rounded hover:bg-[#d36f02] transition-colors" 
+                                        onclick="quickAddToOrder('{{ $row->id }}', '{{ $row->name }}', {{ $row->price }}, {{ $row->cost_price }}, this)">
+                                    Quick Order
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            @endforeach
+                    @endforeach
+                </div>
+            </div>
 
         </section>
 
@@ -461,7 +591,7 @@
             <hr class="border-dashed border-t-2 my-4">
 
             <!-- Hidden form for transaction -->
-            <form id="transactionForm" method="POST" action="{{ route('owner.transaksitunai.store') }}" style="display: none;">
+            <form id="transactionForm" method="POST" action="{{ route('karyawan.transaksitunai.store') }}" style="display: none;">
                 @csrf
                 <input type="hidden" name="subtotal" id="transaction_subtotal">
                 <input type="hidden" name="total_cost_price" id="transaction_total_cost_price">
@@ -471,13 +601,13 @@
             </form>
 
             <!-- Hidden form for best seller tracking -->
-            <form id="bestSellerForm" method="POST" action="{{ route('owner.menu-best-sellers.store') }}" style="display: none;">
+            <form id="bestSellerForm" method="POST" action="{{ route('karyawan.menu-best-sellers.store') }}" style="display: none;">
                 @csrf
                 <input type="hidden" name="product_ordered" id="best_seller_products">
             </form>
 
             <!-- Add this after the existing transactionForm -->
-            <form id="transactionQRISForm" method="POST" action="{{ route('owner.transaksiqris.store') }}" style="display: none;">
+            <form id="transactionQRISForm" method="POST" action="{{ route('karyawan.transaksiqris.store') }}" style="display: none;">
                 @csrf
                 <input type="hidden" name="subtotal" id="transaction_qris_subtotal">
                 <input type="hidden" name="total_cost_price" id="transaction_qris_total_cost_price">
@@ -1540,6 +1670,86 @@
             // Set initial active state
             filterButtons[0].classList.add('active');
         });
+    </script>
+    <script>
+        // Add this to your existing JavaScript, before the closing </body> tag
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewToggle = document.getElementById('view-toggle');
+            const productsContainer = document.getElementById('products-container');
+            const cardViewContainer = document.getElementById('card-view-container');
+            
+            viewToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    // Show card view
+                    productsContainer.style.display = 'none';
+                    cardViewContainer.style.display = 'block';
+                } else {
+                    // Show detailed view
+                    productsContainer.style.display = 'block';
+                    cardViewContainer.style.display = 'none';
+                }
+            });
+        });
+        
+        // Function to increment amount in card view
+        function quickIncrementAmount(button) {
+            const amountSpan = button.previousElementSibling;
+            let amount = parseInt(amountSpan.textContent);
+            amountSpan.textContent = amount + 1;
+        }
+        
+        // Function to decrement amount in card view
+        function quickDecrementAmount(button) {
+            const amountSpan = button.nextElementSibling;
+            let amount = parseInt(amountSpan.textContent);
+            if (amount > 1) {
+                amountSpan.textContent = amount - 1;
+            }
+        }
+        
+        // Function to quickly add items to order with default values
+        function quickAddToOrder(productId, productName, basePrice, costPrice, button) {
+            // Get the amount from the card
+            const cardElement = button.closest('.product-card');
+            const amount = parseInt(cardElement.querySelector('.card-amount').textContent);
+            
+            // Create an item with default values (Medium size, 50% sugar, 50% ice, No Topping)
+            const item = document.createElement('div');
+            item.className = 'flex flex-col border-b pb-2 mb-3';
+            item.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <span class="font-semibold lg:text-xs">${productName} x${amount}</span>
+                        </div>
+                        <ul class="ml-2 text-gray-600 text-xs mt-1">
+                            <li>Size: M</li>
+                            <li>Sugar: 50%</li>
+                            <li>Ice: 50%</li>
+                            <li>Topping: No Topping</li>
+                            <li>Base Price: ${formatRupiah(basePrice)}</li>
+                            <li class="font-semibold lg:text-xs">Total: ${formatRupiah(basePrice * amount)}</li>
+                        </ul>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="removeItem(this)" class="text-red-500 hover:text-red-700 text-xs">×</button>
+                    </div>
+                </div>
+            `;
+            
+            // Add to order
+            const itemList = document.getElementById('item-list');
+            itemList.appendChild(item);
+            
+            // Reset the amount to 1
+            cardElement.querySelector('.card-amount').textContent = '1';
+            
+            // Update subtotal
+            updateSubtotal();
+            
+            // Show success message
+            toastr.success('Item added to order successfully!', 'Success');
+        }
     </script>
 
 </body>
