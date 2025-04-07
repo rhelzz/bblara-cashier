@@ -1,160 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tambah Produk - Bblara</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Bootstrap Icons CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" />
-    <!-- Font Cdn -->
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        font-family: 'Raleway', sans-serif;
-      }
-      .nav-text {
-        position: relative;
-        display: inline-block;
-      }
-      .nav-text::after {
-        content: '';
-        position: absolute;
-        width: 0;
-        height: 2px;
-        bottom: -2px;
-        left: 0;
-        background-color: #e17f12;
-        transition: width 0.2s ease-in-out;
-      }
-      .hover-link:hover .nav-text::after {
-        width: 100%;
-      }
-      input[type="text"],
-      input[type="number"],
-      input[type="file"] {
-        border: 2px solid #e2e8f0; /* Tailwind gray-300 */
-        padding: 0.75rem 1rem; /* Tailwind p-3 px-4 */
-        border-radius: 0.375rem; /* Tailwind rounded-md */
-        transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-      }
-      input[type="text"]:focus,
-      input[type="number"]:focus,
-      input[type="file"]:focus {
-        border-color: #3182ce; /* Tailwind blue-500 */
-        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3); /* Tailwind ring-blue-500 */
-        outline: none;
-      }
-      input[type="text"]:hover,
-      input[type="number"]:hover,
-      input[type="file"]:hover {
-        border-color: #cbd5e0; /* Tailwind gray-400 */
-      }
-      .dropzone {
-        border: 2px dashed #e2e8f0; /* Tailwind gray-300 */
-        border-radius: 0.375rem; /* Tailwind rounded-md */
-        padding: 1.5rem; /* Tailwind p-6 */
-        text-align: center;
-        transition: border-color 0.2s ease-in-out;
-        cursor: pointer;
-      }
-      .dropzone:hover {
-        border-color: #cbd5e0; /* Tailwind gray-400 */
-      }
-      .dropzone.dragover {
-        border-color: #3182ce; /* Tailwind blue-500 */
-      }
+        body {
+            font-family: 'Raleway', sans-serif;
+            background-color: #f8fafc;
+        }
+        .nav-text {
+            position: relative;
+            display: inline-block;
+        }
+        .nav-text::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #e17f12;
+            transition: width 0.2s ease-in-out;
+        }
+        .hover-link:hover .nav-text::after {
+            width: 100%;
+        }
+        
+        /* Enhanced Input Styles */
+        .form-input {
+            transition: all 0.3s ease;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+        }
+        .form-input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #3b82f6;
+        }
+        .input-group:hover label {
+            color: #2563eb;
+        }
+
+        /* Enhanced Dropzone */
+        .dropzone {
+            border: 2px dashed #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: #f8fafc;
+        }
+        .dropzone:hover {
+            border-color: #3b82f6;
+            background-color: #f0f7ff;
+        }
+        .dropzone.dragover {
+            border-color: #2563eb;
+            background-color: #e8f2ff;
+        }
+
+        /* Floating Labels */
+        .floating-label {
+            transform: translateY(-50%) scale(0.85);
+            background-color: white;
+            padding: 0 0.25rem;
+        }
+
+        /* Enhanced Card Style */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1f5f9;
+        }
     </style>
-  </head>
-  <body class="bg-gray-100">
+</head>
+<body class="bg-gray-50">
     <div class="flex">
-      <!-- Toggle Button for Sidebar -->
-      <button
-        class="fixed text-white text-3xl top-5 left-4 p-2 rounded-md bg-gray-700 lg:hidden focus:outline-none z-50"
-        onclick="toggleSidebar()"
-      >
-        <i class="bi bi-list"></i>
-      </button>
+        <button class="fixed text-white text-3xl top-5 left-4 p-2 rounded-md bg-gray-700 lg:hidden focus:outline-none z-50"
+                onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
 
-      <!-- Sidebar -->
-      <x-navbar-owner></x-navbar-owner>
+        <x-navbar-owner></x-navbar-owner>
 
-      <!-- Main Content -->
-      <div class="flex-1 lg:w-5/6">
-        <!-- Navbar Top -->
-        <x-navbar-top-owner></x-navbar-top-owner>
+        <div class="flex-1 lg:w-5/6">
+            <x-navbar-top-owner></x-navbar-top-owner>
 
-        <!-- Content Wrapper -->
-        <div class="p-4 lg:p-8">
-          <div class="p-6 bg-gray-100 min-h-screen">
-            <div class="max-w-2xl mx-auto">
-              <div class="bg-white rounded-lg shadow-lg p-6">
-                <h1 class="text-2xl font-semibold text-gray-900 mb-6">Tambah Produk Baru</h1>
+            <div class="p-4 lg:p-8">
+                <div class="max-w-2xl mx-auto">
+                    <!-- Enhanced Card Design -->
+                    <div class="card">
+                        <div class="border-b border-gray-100 px-8 py-6">
+                            <h1 class="text-2xl font-semibold text-gray-900">Tambah Produk Baru</h1>
+                            <p class="mt-2 text-gray-600 text-sm">Lengkapi informasi produk yang akan ditambahkan</p>
+                        </div>
 
-                <form action="{{ route('owner.product.store') }}" method="POST" enctype="multipart/form-data">
-                  @csrf
+                        <form action="{{ route('owner.product.store') }}" method="POST" enctype="multipart/form-data" class="p-8">
+                            @csrf
 
-                  <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" name="name" id="name"
-                           class="mt-1 block w-full"
-                           value="{{ old('name') }}" required>
-                    @error('name')
-                      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                  </div>
+                            <!-- Enhanced Input Groups -->
+                            <div class="space-y-6">
+                                <div class="input-group relative">
+                                    <label for="name" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                        Nama Produk
+                                    </label>
+                                    <input type="text" 
+                                           name="name" 
+                                           id="name"
+                                           class="form-input block w-full px-4 py-3 text-gray-700"
+                                           value="{{ old('name') }}"
+                                           required>
+                                    @error('name')
+                                        <p class="mt-2 text-sm text-red-600">
+                                            <i class="bi bi-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
 
-                  <div class="mb-4">
-                    <label for="cost_price" class="block text-sm font-medium text-gray-700">Harga Modal</label>
-                    <input type="number" name="cost_price" id="cost_price"
-                           class="mt-1 block w-full"
-                           value="{{ old('cost_price') }}" required>
-                    @error('cost_price')
-                      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                  </div>
+                                <div class="input-group relative">
+                                    <label for="cost_price" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                        Harga Modal
+                                    </label>
+                                    <input type="number" 
+                                           name="cost_price" 
+                                           id="cost_price"
+                                           class="form-input block w-full px-4 py-3 text-gray-700"
+                                           value="{{ old('cost_price') }}"
+                                           required>
+                                    @error('cost_price')
+                                        <p class="mt-2 text-sm text-red-600">
+                                            <i class="bi bi-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
 
-                  <div class="mb-4">
-                    <label for="price" class="block text-sm font-medium text-gray-700">Harga Jual</label>
-                    <input type="number" name="price" id="price"
-                           class="mt-1 block w-full"
-                           value="{{ old('price') }}" required>
-                    @error('price')
-                      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                  </div>
+                                <div class="input-group relative">
+                                    <label for="price" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                        Harga Jual
+                                    </label>
+                                    <input type="number" 
+                                           name="price" 
+                                           id="price"
+                                           class="form-input block w-full px-4 py-3 text-gray-700"
+                                           value="{{ old('price') }}"
+                                           required>
+                                    @error('price')
+                                        <p class="mt-2 text-sm text-red-600">
+                                            <i class="bi bi-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
 
-                  <div class="mb-4">
-                    <label for="image" class="block text-sm font-medium text-gray-700">Gambar Produk</label>
-                    <div class="dropzone" id="dropzone">
-                      <i class="bi bi-cloud-arrow-up text-gray-400 text-4xl"></i>
-                      <p class="text-gray-400">Drag & drop gambar di sini, atau klik untuk memilih gambar</p>
-                      <input type="file" name="image" id="image" class="hidden" accept="image/*" required>
+                                <!-- Enhanced Dropzone -->
+                                <div class="input-group">
+                                    <label class="block text-sm font-medium text-gray-500 mb-2">Gambar Produk</label>
+                                    <div class="dropzone" id="dropzone">
+                                        <i class="bi bi-cloud-arrow-up text-gray-400 text-4xl mb-4"></i>
+                                        <p class="text-gray-500">Drag & drop gambar di sini, atau klik untuk memilih gambar</p>
+                                        <input type="file" name="image" id="image" class="hidden" accept="image/*" required>
+                                        <img id="preview" class="mt-4 max-h-40 mx-auto hidden rounded-lg">
+                                    </div>
+                                    @error('image')
+                                        <p class="mt-2 text-sm text-red-600">
+                                            <i class="bi bi-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
+                                </div>
+
+                                <!-- Enhanced Buttons -->
+                                <div class="flex justify-end space-x-4 pt-6 border-t">
+                                    <a href="{{ route('owner.product.index') }}"
+                                       class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                        <i class="bi bi-arrow-left mr-2"></i>
+                                        Kembali
+                                    </a>
+                                    <button type="submit" 
+                                            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200">
+                                        <i class="bi bi-check-lg mr-2"></i>
+                                        Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    @error('image')
-                      <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                  </div>
-
-                  <div class="flex justify-end mt-6">
-                    <a href="{{ route('owner.product.index') }}"
-                       class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-600">
-                      Batal
-                    </a>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                      Simpan
-                    </button>
-                  </div>
-                </form>
-              </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 
-      <!-- Scripts -->
-      <script>
+    <script>
+        // Enhanced Dropzone Functionality
+        const dropzone = document.getElementById('dropzone');
+        const imageInput = document.getElementById('image');
+        const previewImg = document.getElementById('preview');
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        dropzone.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewImg.src = e.target.result;
+                        previewImg.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Existing toggle functions
         function toggleDropdown(button) {
           const dropdownMenus = document.querySelectorAll(".dropdown-menu");
           const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
@@ -188,40 +276,6 @@
             dropdownArrow.classList.remove("rotate-180");
           }
         }
-
-        // Drag and Drop functionality
-        const dropzone = document.getElementById('dropzone');
-        const imageInput = document.getElementById('image');
-
-        dropzone.addEventListener('dragover', (event) => {
-          event.preventDefault();
-          dropzone.classList.add('dragover');
-        });
-
-        dropzone.addEventListener('dragleave', () => {
-          dropzone.classList.remove('dragover');
-        });
-
-        dropzone.addEventListener('drop', (event) => {
-          event.preventDefault();
-          dropzone.classList.remove('dragover');
-          const files = event.dataTransfer.files;
-          imageInput.files = files;
-          if (files.length > 0) {
-            dropzone.querySelector('p').innerText = files[0].name;
-          }
-        });
-
-        dropzone.addEventListener('click', () => {
-          imageInput.click();
-        });
-
-        imageInput.addEventListener('change', () => {
-          const files = imageInput.files;
-          if (files.length > 0) {
-            dropzone.querySelector('p').innerText = files[0].name;
-          }
-        });
-      </script>
-    </body>
+    </script>
+</body>
 </html>

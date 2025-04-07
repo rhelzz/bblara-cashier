@@ -130,8 +130,8 @@
                                 </label>
                                 <select id="entriesPerPage" 
                                         class="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 bg-white">
-                                    <option value="5" selected>5 entri</option>
-                                    <option value="10">10 entri</option>
+                                    <option value="5">5 entri</option>
+                                    <option value="10" selected>10 entri</option>
                                     <option value="25">25 entri</option>
                                     <option value="50">50 entri</option>
                                 </select>
@@ -271,7 +271,7 @@
         // State untuk tabel dan pagination
         const tableState = {
             currentPage: 1,
-            entriesPerPage: 5,
+            entriesPerPage: 10,
             allRows: [],
             filteredData: []
         };

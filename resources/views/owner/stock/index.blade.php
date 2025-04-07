@@ -12,6 +12,26 @@
             font-family: 'Raleway', sans-serif;
             background-color: #f8fafc;
         }
+        .nav-text {
+            position: relative;
+            display: inline-block;
+        }
+        .nav-text::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #e17f12;
+            transition: width 0.2s ease-in-out;
+        }
+        .hover-link:hover .nav-text::after {
+          width: 100%;
+        }
+        a:hover .nav-text::after {
+            width: 100%;
+        }
         .card-hover {
             transition: all 0.3s ease;
         }
@@ -391,6 +411,38 @@
                 closeStockActions();
             }
         });
+    </script>
+    <script>
+        function toggleDropdown(button) {
+            const dropdownMenus = document.querySelectorAll(".dropdown-menu");
+            const dropdownArrows = document.querySelectorAll("i.bi-chevron-down");
+
+            dropdownMenus.forEach((menu) => {
+                if (menu !== button.nextElementSibling) {
+                    menu.classList.add("max-h-0");
+                    menu.classList.remove("max-h-40");
+                }
+            });
+
+            dropdownArrows.forEach((arrow) => {
+                if (arrow !== button.querySelector("i.bi-chevron-down")) {
+                    arrow.classList.remove("rotate-180");
+                }
+            });
+
+            const dropdownMenu = button.nextElementSibling;
+            const dropdownArrow = button.querySelector("i.bi-chevron-down");
+
+            if (dropdownMenu.classList.contains("max-h-0")) {
+                dropdownMenu.classList.remove("max-h-0");
+                dropdownMenu.classList.add("max-h-40");
+                dropdownArrow.classList.add("rotate-180");
+            } else {
+                dropdownMenu.classList.add("max-h-0");
+                dropdownMenu.classList.remove("max-h-40");
+                dropdownArrow.classList.remove("rotate-180");
+            }
+        }
     </script>
 </body>
 </html>
