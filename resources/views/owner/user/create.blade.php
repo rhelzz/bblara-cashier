@@ -90,7 +90,6 @@
                                     <label for="usertype" class="block text-sm font-medium text-gray-700">Tipe Pengguna</label>
                                     <select name="usertype" id="usertype" class="mt-1 block w-full" required>
                                         <option value="" disabled selected>Pilih Tipe Pengguna</option>
-                                        <option value="owner">Owner</option>
                                         <option value="karyawan">Karyawan</option>
                                         <option value="inventaris">Inventaris</option>
                                     </select>

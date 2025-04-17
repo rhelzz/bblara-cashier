@@ -6,10 +6,11 @@
     <title>Tambah Stok - Bblara</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Raleway', sans-serif;
+            background-color: #f8fafc;
         }
         .nav-text {
             position: relative;
@@ -26,78 +27,188 @@
             transition: width 0.2s ease-in-out;
         }
         .hover-link:hover .nav-text::after {
+          width: 100%;
+        }
+        a:hover .nav-text::after {
             width: 100%;
         }
-        input[type="text"],
-        input[type="number"],
-        select {
-            border: 2px solid #e2e8f0;
-            padding: 0.75rem 1rem;
-            border-radius: 0.375rem;
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        .form-input {
+            transition: all 0.3s ease;
         }
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            border-color: #3182ce;
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
-            outline: none;
+        .form-input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
-        input[type="text"]:hover,
-        input[type="number"]:hover,
-        select:hover {
-            border-color: #cbd5e0;
+        .input-group:hover label {
+            color: #2563eb;
+        }
+        .custom-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .floating-label {
+            transform: translateY(-50%) scale(0.85);
+            background-color: white;
+            padding: 0 0.25rem;
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
     <div class="flex">
         <button class="fixed text-white text-3xl top-5 left-4 p-2 rounded-md bg-gray-700 lg:hidden focus:outline-none z-50" onclick="toggleSidebar()">
             <i class="bi bi-list"></i>
         </button>
         <x-navbar-inventaris></x-navbar-inventaris>
+        
         <div class="flex-1 lg:w-5/6">
             <x-navbar-top-inventaris></x-navbar-top-inventaris>
+            
             <div class="p-4 lg:p-8">
-                <div class="p-6 bg-gray-100 min-h-screen">
-                    <div class="max-w-2xl mx-auto">
-                        <div class="bg-white rounded-lg shadow-lg p-6">
-                            <h1 class="text-2xl font-semibold text-gray-900 mb-6">Tambah Stok Baru</h1>
-                            <form action="{{ route('inventaris.stock.store') }}" method="POST" enctype="multipart/form-data">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Breadcrumb -->
+                    <nav class="flex mb-8" aria-label="Breadcrumb">
+                        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                            <li class="inline-flex items-center">
+                                <a href="{{ route('inventaris.stock.index') }}" class="inline-flex items-center text-gray-500 hover:text-blue-600">
+                                    <i class="bi bi-house-door mr-2"></i>
+                                    Stok
+                                </a>
+                            </li>
+                            <li>
+                                <div class="flex items-center">
+                                    <i class="bi bi-chevron-right text-gray-400 mx-2"></i>
+                                    <span class="text-gray-700">Tambah Stok Baru</span>
+                                </div>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <!-- Main Form Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <!-- Form Header -->
+                        <div class="border-b border-gray-100 px-8 py-6">
+                            <h1 class="text-2xl font-semibold text-gray-800">Tambah Stok Baru</h1>
+                            <p class="mt-2 text-gray-600">Isi formulir di bawah untuk menambahkan stok bahan baku baru</p>
+                        </div>
+
+                        <!-- Form Content -->
+                        <div class="p-8">
+                            <form action="{{ route('inventaris.stock.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                 @csrf
-                                <div class="mb-4">
-                                    <label for="raw_material" class="block text-sm font-medium text-gray-700">Bahan Baku</label>
-                                    <input type="text" name="raw_material" id="raw_material" class="mt-1 block w-full" value="{{ old('raw_material') }}" required>
+                                
+                                <!-- Bahan Baku Input -->
+                                <div class="input-group relative">
+                                    <label for="raw_material" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                        Nama Bahan Baku
+                                    </label>
+                                    <input type="text" 
+                                           name="raw_material" 
+                                           id="raw_material" 
+                                           class="form-input block w-full px-4 py-3 text-gray-700 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200" 
+                                           value="{{ old('raw_material') }}"
+                                           placeholder="Masukkan nama bahan baku"
+                                           required>
                                     @error('raw_material')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        <p class="mt-2 text-sm text-red-600">
+                                            <i class="bi bi-exclamation-circle mr-1"></i>
+                                            {{ $message }}
+                                        </p>
                                     @enderror
                                 </div>
-                                <div class="mb-4">
-                                    <label for="qty" class="block text-sm font-medium text-gray-700">Kuantitas</label>
-                                    <input type="number" name="qty" id="qty" class="mt-1 block w-full" value="{{ old('qty') }}" required>
-                                    @error('qty')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div class="mb-4">
-                                    <label for="weight" class="block text-sm font-medium text-gray-700">Berat</label>
-                                    <div class="flex">
-                                        <input type="text" name="weight" id="weight" class="mt-1 block w-full" value="{{ old('weight') }}" required>
-                                        <select name="unit" id="unit" class="mt-1 ml-2 block">
-                                            <option value="gr">gr</option>
-                                            <option value="ml">ml</option>
-                                            <option value="l">l</option>
-                                            <option value="ons">ons</option>
-                                            <option value="kg">kg</option>
-                                        </select>
+
+                                <!-- Quantity and Weight Group -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Quantity Input -->
+                                    <div class="input-group relative">
+                                        <label for="qty" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                            Kuantitas
+                                        </label>
+                                        <input type="number" 
+                                               name="qty" 
+                                               id="qty" 
+                                               class="form-input block w-full px-4 py-3 text-gray-700 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200" 
+                                               value="{{ old('qty') }}"
+                                               min="1"
+                                               placeholder="Masukkan jumlah"
+                                               required>
+                                        @error('qty')
+                                            <p class="mt-2 text-sm text-red-600">
+                                                <i class="bi bi-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
                                     </div>
-                                    @error('unit')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
+
+                                    <!-- Weight Input Group -->
+                                    <div class="space-y-2">
+                                        <div class="flex gap-3">
+                                            <div class="input-group relative flex-1">
+                                                <label for="weight" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                                    Berat
+                                                </label>
+                                                <input type="number" 
+                                                       name="weight" 
+                                                       id="weight" 
+                                                       class="form-input block w-full px-4 py-3 text-gray-700 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200" 
+                                                       value="{{ old('weight') }}"
+                                                       min="0.1"
+                                                       step="0.1"
+                                                       placeholder="Masukkan berat"
+                                                       required>
+                                            </div>
+                                            <div class="input-group relative w-32">
+                                                <label for="unit" class="absolute -top-2 left-2 z-10 px-1 text-xs font-medium text-gray-500 floating-label">
+                                                    Satuan
+                                                </label>
+                                                <select name="unit" 
+                                                        id="unit" 
+                                                        class="form-input custom-select block w-full px-4 py-3 text-gray-700 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+                                                    <option value="gr">gram (gr)</option>
+                                                    <option value="kg">kilogram (kg)</option>
+                                                    <option value="ml">mililiter (ml)</option>
+                                                    <option value="l">liter (l)</option>
+                                                    <option value="ons">ons</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        @error('weight')
+                                            <p class="text-sm text-red-600">
+                                                <i class="bi bi-exclamation-circle mr-1"></i>
+                                                {{ $message }}
+                                            </p>
+                                        @enderror
+                                    </div>
                                 </div>
-                                <div class="flex justify-end mt-6">
-                                    <a href="{{ route('inventaris.stock.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-600">Batal</a>
-                                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Simpan</button>
+
+                                <!-- Preview Section -->
+                                <div class="bg-blue-50 rounded-lg p-4 mt-6">
+                                    <h3 class="text-sm font-medium text-blue-800 mb-2">Preview Informasi Stok</h3>
+                                    <div class="text-blue-600" id="previewInfo">
+                                        Menambahkan <span id="previewQty">0</span> unit 
+                                        <span id="previewMaterial">bahan baku</span> dengan berat 
+                                        <span id="previewWeight">0</span> <span id="previewUnit">gr</span> per unit
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="flex items-center justify-end space-x-4 pt-6 border-t">
+                                    <button type="button" 
+                                            onclick="window.history.back()" 
+                                            class="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200">
+                                        <i class="bi bi-arrow-left mr-2"></i>
+                                        Kembali
+                                    </button>
+                                    <button type="submit" 
+                                            class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200">
+                                        <i class="bi bi-check-lg mr-2"></i>
+                                        Simpan Stok
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -106,6 +217,59 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Live Preview Updates
+        const rawMaterialInput = document.getElementById('raw_material');
+        const qtyInput = document.getElementById('qty');
+        const weightInput = document.getElementById('weight');
+        const unitSelect = document.getElementById('unit');
+        
+        const previewMaterial = document.getElementById('previewMaterial');
+        const previewQty = document.getElementById('previewQty');
+        const previewWeight = document.getElementById('previewWeight');
+        const previewUnit = document.getElementById('previewUnit');
+
+        function updatePreview() {
+            previewMaterial.textContent = rawMaterialInput.value || 'bahan baku';
+            previewQty.textContent = qtyInput.value || '0';
+            previewWeight.textContent = weightInput.value || '0';
+            previewUnit.textContent = unitSelect.value;
+        }
+
+        // Event listeners for live preview
+        rawMaterialInput.addEventListener('input', updatePreview);
+        qtyInput.addEventListener('input', updatePreview);
+        weightInput.addEventListener('input', updatePreview);
+        unitSelect.addEventListener('change', updatePreview);
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const required = ['raw_material', 'qty', 'weight'];
+            let isValid = true;
+
+            required.forEach(field => {
+                const input = document.getElementById(field);
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('border-red-500');
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Mohon lengkapi semua field yang diperlukan');
+            }
+        });
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+    </script>
     <script>
         function toggleDropdown(button) {
             const dropdownMenus = document.querySelectorAll(".dropdown-menu");

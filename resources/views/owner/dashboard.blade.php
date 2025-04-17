@@ -59,143 +59,245 @@
 
         <!-- Content Wrapper -->
         <div class="p-4 lg:p-8">
-          <!-- Welcome Message -->
-          <div class="bg-white p-4 mb-6 rounded-lg flex items-center shadow space-x-4">
-            <i class="bi bi-person-circle text-4xl text-[#005281]"></i>
-            <div>
-              <h2 class="text-2xl lg:text-xl font-semibold text-gray-700">
-                Halo {{ ucfirst(Auth::user()->name) }}, Selamat Datang!
-              </h2>
-              <p class="text-gray-600 text-sm">
-                Ini adalah dashboard untuk melihat data real-time dan performa bisnis Anda.
-              </p>
+          <!-- Welcome Message - Improved Version -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-6 relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute right-0 top-0 w-32 h-32 bg-[#005281]/5 rounded-bl-full"></div>
+            
+            <div class="flex items-center gap-6 relative">
+                <div class="flex items-center justify-center w-16 h-16 bg-[#005281]/10 rounded-full">
+                    <i class="bi bi-person-circle text-4xl text-[#005281]"></i>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-2xl font-semibold text-gray-700">
+                            Halo {{ ucfirst(Auth::user()->name) }}!
+                        </h2>
+                        <span class="px-3 py-1 text-sm bg-[#005281]/10 text-[#005281] rounded-full">
+                            Owner
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <i class="bi bi-clock"></i>
+                        <span>{{ now()->format('l, d F Y') }}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Selamat datang di dashboard untuk melihat data real-time dan performa bisnis Anda.
+                    </p>
+                </div>
             </div>
           </div>
 
-          <!-- Date Range Selector -->
-          <div class="bg-white p-4 rounded shadow mb-4">
-            <div class="flex flex-col space-y-4">
-              <!-- Preset Buttons -->
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                <button 
-                  onclick="applyPreset('today')" 
-                  data-preset="today"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out group"
-                >
-                  Hari Ini
-                </button>
-                <button 
-                  onclick="applyPreset('yesterday')" 
-                  data-preset="yesterday"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-                >
-                  Kemarin
-                </button>
-                <button 
-                  onclick="applyPreset('last7days')" 
-                  data-preset="last7days"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-                >
-                  7 Hari Terakhir
-                </button>
-                <button 
-                  onclick="applyPreset('last30days')" 
-                  data-preset="last30days"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-                >
-                  30 Hari Terakhir
-                </button>
-                <button 
-                  onclick="applyPreset('thisMonth')" 
-                  data-preset="thisMonth"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-                >
-                  Bulan Ini
-                </button>
-                <button 
-                  onclick="applyPreset('lastMonth')" 
-                  data-preset="lastMonth"
-                  class="px-4 py-2 text-sm font-medium text-white bg-[#005281] rounded-md hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-opacity-50 transition-colors duration-200 ease-in-out"
-                >
-                  Bulan Lalu
-                </button>
-              </div>
+          <!-- Date Range Selector - Improved Version -->
+          <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+            <div class="space-y-6">
+                <!-- Preset Buttons with Better Layout -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Filter Periode</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                        <button 
+                            onclick="applyPreset('today')" 
+                            data-preset="today"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar-event"></i>
+                                <span>Hari Ini</span>
+                            </div>
+                        </button>
+                        <button 
+                            onclick="applyPreset('yesterday')" 
+                            data-preset="yesterday"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar-minus"></i>
+                                <span>Kemarin</span>
+                            </div>
+                        </button>
+                        <button 
+                            onclick="applyPreset('last7days')" 
+                            data-preset="last7days"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar-week"></i>
+                                <span>7 Hari</span>
+                            </div>
+                        </button>
+                        <button 
+                            onclick="applyPreset('last30days')" 
+                            data-preset="last30days"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar3"></i>
+                                <span>30 Hari</span>
+                            </div>
+                        </button>
+                        <button 
+                            onclick="applyPreset('thisMonth')" 
+                            data-preset="thisMonth"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar-check"></i>
+                                <span>Bulan Ini</span>
+                            </div>
+                        </button>
+                        <button 
+                            onclick="applyPreset('lastMonth')" 
+                            data-preset="lastMonth"
+                            class="relative px-4 py-2.5 text-sm font-medium text-white bg-[#005281] rounded-lg 
+                                  hover:bg-[#003d61] focus:outline-none focus:ring-2 focus:ring-[#005281] focus:ring-offset-2 
+                                  transition-all duration-200 ease-in-out shadow-sm hover:shadow group"
+                        >
+                            <div class="flex items-center justify-center gap-2">
+                                <i class="bi bi-calendar2-check"></i>
+                                <span>Bulan Lalu</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
 
-              <!-- Custom Date Range -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Awal</label>
-                  <input 
-                    type="date" 
-                    id="startDate" 
-                    class="w-full p-2 border rounded focus:ring-2 focus:ring-[#005281] focus:border-transparent"
-                    onchange="handleDateChange()"
-                  >
+                <!-- Custom Date Range with Better Design -->
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Pilih Tanggal Kustom</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="relative">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Awal</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="bi bi-calendar3 text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="date" 
+                                    id="startDate" 
+                                    class="block w-full pl-10 pr-4 py-2.5 text-gray-700 bg-white border border-gray-300 
+                                          rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005281] focus:border-[#005281]
+                                          transition-colors duration-200"
+                                    onchange="handleDateChange()"
+                                >
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Akhir</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <i class="bi bi-calendar3 text-gray-400"></i>
+                                </div>
+                                <input 
+                                    type="date" 
+                                    id="endDate" 
+                                    class="block w-full pl-10 pr-4 py-2.5 text-gray-700 bg-white border border-gray-300 
+                                          rounded-lg focus:outline-none focus:ring-2 focus:ring-[#005281] focus:border-[#005281]
+                                          transition-colors duration-200"
+                                    onchange="handleDateChange()"
+                                >
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                  <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Akhir</label>
-                  <input 
-                    type="date" 
-                    id="endDate" 
-                    class="w-full p-2 border rounded focus:ring-2 focus:ring-[#005281] focus:border-transparent"
-                    onchange="handleDateChange()"
-                  >
-                </div>
-              </div>
             </div>
           </div>
 
           <!-- Stats Cards -->
-          <div class="stats-cards flex flex-wrap gap-4 mb-4">
+          <div class="stats-cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <!-- Card 1: Total Modal -->
-            <div class="stats-card flex-1 min-w-[250px] bg-white p-4 rounded shadow">
-              <div class="flex items-center mb-2">
-                <i class="bi bi-cart text-gray-500 mr-2"></i>
-                <h3 class="text-gray-700 font-semibold">Total Modal</h3>
-              </div>
-              <p id="modalPercentage" class="text-{{ $modalPercentage >= 0 ? 'green' : 'red' }}-500 text-sm mb-2">
-                {{ number_format($modalPercentage, 1) }}% 
-                ({{ $modalDiff >= 0 ? '+' : '' }}Rp{{ number_format($modalDiff, 0, ',', '.') }}) 
-                dibanding periode sebelumnya
-              </p>
-              <p class="text-gray-500 text-sm">Total Modal</p>
-              <p class="text-gray-700 text-2xl font-bold" id="totalModal">
-                Rp{{ number_format($todayModal, 0, ',', '.') }}
-              </p>
+            <div class="stats-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 bg-[#005281]/10 rounded-lg">
+                                <i class="bi bi-cart text-2xl text-[#005281]"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-700">Total Modal</h3>
+                        </div>
+                        
+                        <p class="text-3xl font-bold text-[#005281]" id="totalModal">
+                            Rp{{ number_format($todayModal, 0, ',', '.') }}
+                        </p>
+                        
+                        <div class="flex flex-col gap-1">
+                            <p id="modalPercentage" class="text-{{ $modalPercentage >= 0 ? 'green' : 'red' }}-500 text-sm flex items-center gap-2">
+                                <i class="bi {{ $modalPercentage >= 0 ? 'bi-arrow-up-circle-fill' : 'bi-arrow-down-circle-fill' }}"></i>
+                                {{ number_format($modalPercentage, 1) }}%
+                            </p>
+                            <p class="text-gray-500 text-sm">
+                                ({{ $modalDiff >= 0 ? '+' : '' }}Rp{{ number_format($modalDiff, 0, ',', '.') }})
+                                <span class="text-gray-400">dibanding periode sebelumnya</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Card 2: Total Pendapatan -->
-            <div class="stats-card flex-1 min-w-[250px] bg-white p-4 rounded shadow">
-              <div class="flex items-center mb-2">
-                <i class="bi bi-bar-chart text-gray-500 mr-2"></i>
-                <h3 class="text-gray-700 font-semibold">Total Pendapatan</h3>
-              </div>
-              <p id="pendapatanPercentage" class="text-{{ $pendapatanPercentage >= 0 ? 'green' : 'red' }}-500 text-sm mb-2">
-                {{ number_format($pendapatanPercentage, 1) }}% 
-                ({{ $pendapatanDiff >= 0 ? '+' : '' }}Rp{{ number_format($pendapatanDiff, 0, ',', '.') }}) 
-                dibanding periode sebelumnya
-              </p>
-              <p class="text-gray-500 text-sm">Total Pendapatan</p>
-              <p class="text-gray-700 text-2xl font-bold" id="totalPendapatan">
-                Rp{{ number_format($todayPendapatan, 0, ',', '.') }}
-              </p>
+            <div class="stats-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 bg-[#0077b6]/10 rounded-lg">
+                                <i class="bi bi-bar-chart text-2xl text-[#0077b6]"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-700">Total Pendapatan</h3>
+                        </div>
+                        
+                        <p class="text-3xl font-bold text-[#0077b6]" id="totalPendapatan">
+                            Rp{{ number_format($todayPendapatan, 0, ',', '.') }}
+                        </p>
+                        
+                        <div class="flex flex-col gap-1">
+                            <p id="pendapatanPercentage" class="text-{{ $pendapatanPercentage >= 0 ? 'green' : 'red' }}-500 text-sm flex items-center gap-2">
+                                <i class="bi {{ $pendapatanPercentage >= 0 ? 'bi-arrow-up-circle-fill' : 'bi-arrow-down-circle-fill' }}"></i>
+                                {{ number_format($pendapatanPercentage, 1) }}%
+                            </p>
+                            <p class="text-gray-500 text-sm">
+                                ({{ $pendapatanDiff >= 0 ? '+' : '' }}Rp{{ number_format($pendapatanDiff, 0, ',', '.') }})
+                                <span class="text-gray-400">dibanding periode sebelumnya</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Card 3: Total Keuntungan -->
-            <div class="stats-card flex-1 min-w-[250px] bg-white p-4 rounded shadow">
-              <div class="flex items-center mb-2">
-                <i class="bi bi-cash-stack text-gray-500 mr-2"></i>
-                <h3 class="text-gray-700 font-semibold">Total Keuntungan</h3>
-              </div>
-              <p id="keuntunganPercentage" class="text-{{ $keuntunganPercentage >= 0 ? 'green' : 'red' }}-500 text-sm mb-2">
-                {{ number_format($keuntunganPercentage, 1) }}% 
-                ({{ $keuntunganDiff >= 0 ? '+' : '' }}Rp{{ number_format($keuntunganDiff, 0, ',', '.') }}) 
-                dibanding periode sebelumnya
-              </p>
-              <p class="text-gray-500 text-sm">Total Keuntungan</p>
-              <p class="text-gray-700 text-2xl font-bold" id="totalKeuntungan">
-                Rp{{ number_format($todayKeuntungan, 0, ',', '.') }}
-              </p>
+            <div class="stats-card bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <div class="p-2 bg-[#00b4d8]/10 rounded-lg">
+                                <i class="bi bi-cash-stack text-2xl text-[#00b4d8]"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-700">Total Keuntungan</h3>
+                        </div>
+                        
+                        <p class="text-3xl font-bold text-[#00b4d8]" id="totalKeuntungan">
+                            Rp{{ number_format($todayKeuntungan, 0, ',', '.') }}
+                        </p>
+                        
+                        <div class="flex flex-col gap-1">
+                            <p id="keuntunganPercentage" class="text-{{ $keuntunganPercentage >= 0 ? 'green' : 'red' }}-500 text-sm flex items-center gap-2">
+                                <i class="bi {{ $keuntunganPercentage >= 0 ? 'bi-arrow-up-circle-fill' : 'bi-arrow-down-circle-fill' }}"></i>
+                                {{ number_format($keuntunganPercentage, 1) }}%
+                            </p>
+                            <p class="text-gray-500 text-sm">
+                                ({{ $keuntunganDiff >= 0 ? '+' : '' }}Rp{{ number_format($keuntunganDiff, 0, ',', '.') }})
+                                <span class="text-gray-400">dibanding periode sebelumnya</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
 
@@ -205,70 +307,144 @@
           </div>
 
           <!-- To-Do List and Progress Section -->
-          <div class="flex flex-col md:flex-row gap-4 mb-4">
+          <div class="flex flex-col md:flex-row gap-6 mb-6">
             <!-- Card 1: To-Do List -->
-            <div class="w-full md:w-1/2 bg-white p-6 rounded-lg shadow">
-              <div class="flex flex-row mb-4">
-                <i class="bi bi-card-list mr-2"></i>
-                <h2 class="font-semibold text-gray-700 mb-2">To-Do List</h2>
-              </div>
-              <hr class="w-full mb-2 border-t-2 border-gray-300" />
-              <ul class="space-y-2">
-                <li class="flex items-center space-x-3">
-                  <input 
-                    type="checkbox" 
-                    id="task1" 
-                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded" 
-                    onchange="updateProgress()" 
-                  />
-                  <label for="task1" class="text-gray-700">Buka Toko Pukul 10:00 WIB</label>
-                </li>
-                <li class="flex items-center space-x-3">
-                  <input 
-                    type="checkbox" 
-                    id="task2" 
-                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded" 
-                    onchange="updateProgress()" 
-                  />
-                  <label for="task2" class="text-gray-700">Bersih - Bersih / Prepare</label>
-                </li>
-                <li class="flex items-center space-x-3">
-                  <input 
-                    type="checkbox" 
-                    id="task3" 
-                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded" 
-                    onchange="updateProgress()" 
-                  />
-                  <label for="task3" class="text-gray-700">Istirahat Jam Makan Siang</label>
-                </li>
-                <li class="flex items-center space-x-3">
-                  <input 
-                    type="checkbox" 
-                    id="task4" 
-                    class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded" 
-                    onchange="updateProgress()" 
-                  />
-                  <label for="task4" class="text-gray-700">Tutup Pukul 10:00 WIB</label>
-                </li>
-              </ul>
+            <div class="w-full md:w-1/2 bg-white p-6 rounded-xl shadow-lg">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-[#005281]/10 rounded-lg">
+                            <i class="bi bi-list-check text-xl text-[#005281]"></i>
+                        </div>
+                        <h2 class="text-lg font-semibold text-gray-700">To-Do List</h2>
+                    </div>
+                    <button onclick="clearCompletedTasks()" 
+                            class="text-sm text-[#005281] hover:text-[#003d61] transition-colors duration-200">
+                        Clear Completed
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="todo-item group">
+                        <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <input type="checkbox" 
+                                  id="task1" 
+                                  class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded 
+                                          focus:ring-2 focus:ring-[#005281] transition-colors duration-200" 
+                                  onchange="updateProgress()">
+                            <div class="ml-4 flex-1">
+                                <span class="text-gray-700 font-medium group-hover:text-[#005281] transition-colors">
+                                    Buka Toko
+                                </span>
+                                <p class="text-sm text-gray-500">Pukul 10:00 WIB</p>
+                            </div>
+                            <span class="px-2.5 py-0.5 text-sm bg-blue-100 text-blue-800 rounded-full">Pagi</span>
+                        </label>
+                    </div>
+
+                    <div class="todo-item group">
+                        <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <input type="checkbox" 
+                                  id="task2" 
+                                  class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded 
+                                          focus:ring-2 focus:ring-[#005281] transition-colors duration-200" 
+                                  onchange="updateProgress()">
+                            <div class="ml-4 flex-1">
+                                <span class="text-gray-700 font-medium group-hover:text-[#005281] transition-colors">
+                                    Persiapan
+                                </span>
+                                <p class="text-sm text-gray-500">Bersih-bersih & Prepare</p>
+                            </div>
+                            <span class="px-2.5 py-0.5 text-sm bg-yellow-100 text-yellow-800 rounded-full">Prioritas</span>
+                        </label>
+                    </div>
+
+                    <div class="todo-item group">
+                        <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <input type="checkbox" 
+                                  id="task3" 
+                                  class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded 
+                                          focus:ring-2 focus:ring-[#005281] transition-colors duration-200" 
+                                  onchange="updateProgress()">
+                            <div class="ml-4 flex-1">
+                                <span class="text-gray-700 font-medium group-hover:text-[#005281] transition-colors">
+                                    Istirahat
+                                </span>
+                                <p class="text-sm text-gray-500">Jam Makan Siang</p>
+                            </div>
+                            <span class="px-2.5 py-0.5 text-sm bg-green-100 text-green-800 rounded-full">Siang</span>
+                        </label>
+                    </div>
+
+                    <div class="todo-item group">
+                        <label class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <input type="checkbox" 
+                                  id="task4" 
+                                  class="form-checkbox h-5 w-5 text-[#005281] border-gray-300 rounded 
+                                          focus:ring-2 focus:ring-[#005281] transition-colors duration-200" 
+                                  onchange="updateProgress()">
+                            <div class="ml-4 flex-1">
+                                <span class="text-gray-700 font-medium group-hover:text-[#005281] transition-colors">
+                                    Tutup Toko
+                                </span>
+                                <p class="text-sm text-gray-500">Pukul 10:00 WIB</p>
+                            </div>
+                            <span class="px-2.5 py-0.5 text-sm bg-purple-100 text-purple-800 rounded-full">Malam</span>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- Card 2: Progress Bar -->
-            <div class="w-full md:w-1/2 bg-white px-6 py-4 rounded-lg shadow">
-              <div class="mb-4">
-                <div class="flex flex-row items-center mb-4">
-                  <i class="bi bi-clipboard-fill mr-2"></i>
-                  <label class="block text-gray-700 font-semibold">Progress</label>
-                </div>
-                <div class="relative pt-1">
-                  <div class="flex mb-2 items-center justify-between">
-                    <span class="text-sm font-semibold inline-block text-[#005281]">0%</span>
-                    <span class="text-sm font-semibold inline-block text-[#005281]">100%</span>
+            <div class="w-full md:w-1/2 bg-white p-6 rounded-xl shadow-lg">
+              <div class="flex items-center gap-3 mb-6">
+                  <div class="p-2 bg-[#005281]/10 rounded-lg">
+                      <i class="bi bi-graph-up text-xl text-[#005281]"></i>
                   </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="progressBar" class="bg-[#005281] h-2.5 rounded-full transition-all duration-500 ease-in-out" style="width: 0%"></div>
+                  <h2 class="text-lg font-semibold text-gray-700">Progress Hari Ini</h2>
+              </div>
+
+              <div class="space-y-6">
+                  <div class="flex justify-between items-center">
+                      <div>
+                          <h3 class="text-sm font-medium text-gray-700">Penyelesaian Tugas</h3>
+                          <p class="text-xs text-gray-500">Total 4 tugas hari ini</p>
+                      </div>
+                      <span id="progressPercentage" class="text-lg font-semibold text-[#005281]">0%</span>
                   </div>
-                </div>
+
+                  <div class="relative">
+                      <div class="w-full bg-gray-200 rounded-full h-3">
+                          <div id="progressBar" 
+                              class="bg-gradient-to-r from-[#005281] to-[#0077b6] h-3 rounded-full 
+                                      transition-all duration-500 ease-in-out shadow-sm" 
+                              style="width: 0%">
+                          </div>
+                      </div>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-4">
+                      <div class="text-center p-3 bg-gray-50 rounded-lg">
+                          <p class="text-sm text-gray-500">Selesai</p>
+                          <p id="completedTasks" class="text-xl font-semibold text-[#005281]">0</p>
+                      </div>
+                      <div class="text-center p-3 bg-gray-50 rounded-lg">
+                          <p class="text-sm text-gray-500">Pending</p>
+                          <p id="pendingTasks" class="text-xl font-semibold text-gray-700">4</p>
+                      </div>
+                  </div>
+
+                  <!-- Quote of the Day Section -->
+                  <div class="mt-6 p-4 bg-[#005281]/5 rounded-xl">
+                      <div class="flex items-start gap-3">
+                          <i class="bi bi-quote text-3xl text-[#005281]/70"></i>
+                          <div class="space-y-2">
+                              <p id="quoteText" class="text-gray-600 text-sm italic">
+                                  "Sukses adalah hasil dari kesempurnaan, kerja keras, belajar dari pengalaman, loyalitas, dan ketekunan."
+                              </p>
+                              <p id="quoteAuthor" class="text-sm font-medium text-[#005281]">- Colin Powell</p>
+                          </div>
+                      </div>
+                  </div>
               </div>
             </div>
           </div>
@@ -592,5 +768,81 @@
       }
     }
     </script>
+    <script>
+      function updateProgress() {
+          const tasks = document.querySelectorAll('.form-checkbox');
+          const completedTasks = Array.from(tasks).filter(task => task.checked).length;
+          const totalTasks = tasks.length;
+          const progress = (completedTasks / totalTasks) * 100;
+          
+          const progressBar = document.getElementById('progressBar');
+          const progressPercentage = document.getElementById('progressPercentage');
+          const completedTasksElement = document.getElementById('completedTasks');
+          const pendingTasksElement = document.getElementById('pendingTasks');
+          
+          progressBar.style.width = `${progress}%`;
+          progressPercentage.textContent = `${Math.round(progress)}%`;
+          completedTasksElement.textContent = completedTasks;
+          pendingTasksElement.textContent = totalTasks - completedTasks;
+          
+          saveTodoState();
+      }
+  
+      function clearCompletedTasks() {
+          const tasks = document.querySelectorAll('.form-checkbox');
+          tasks.forEach(task => {
+              if (task.checked) {
+                  task.checked = false;
+              }
+          });
+          updateProgress();
+      }
+  </script>
+  <script>
+    const quotes = [
+        {
+            text: "Sukses adalah hasil dari kesempurnaan, kerja keras, belajar dari pengalaman, loyalitas, dan ketekunan.",
+            author: "Colin Powell"
+        },
+        {
+            text: "Jangan pernah menyerah. Hari ini mungkin sulit, besok mungkin lebih sulit, tapi lusa akan indah.",
+            author: "Jack Ma"
+        },
+        {
+            text: "Rahasia kesuksesan adalah melakukan hal yang biasa secara luar biasa.",
+            author: "John D. Rockefeller"
+        },
+        {
+            text: "Kesuksesan bisnis bukan tentang keberuntungan. Ini tentang melihat peluang dan mengambil tindakan.",
+            author: "Richard Branson"
+        },
+        {
+            text: "Jangan takut dengan kegagalan. Ketakutan membuat kita tidak berani mencoba.",
+            author: "Walt Disney"
+        },
+        {
+            text: "Bermimpilah seakan kau akan hidup selamanya. Hiduplah seakan kau akan mati hari ini.",
+            author: "James Dean"
+        },
+        {
+            text: "Kesuksesan adalah perjalanan, bukan tujuan. Proses adalah yang terpenting.",
+            author: "Arthur Ashe"
+        }
+    ];
+
+    function updateQuote() {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        const quote = quotes[randomIndex];
+        
+        document.getElementById('quoteText').textContent = `"${quote.text}"`;
+        document.getElementById('quoteAuthor').textContent = `- ${quote.author}`;
+    }
+
+    // Update quote when page loads
+    document.addEventListener('DOMContentLoaded', updateQuote);
+
+    // Update quote every 24 hours
+    setInterval(updateQuote, 24 * 60 * 60 * 1000);
+  </script>
   </body>
 </html>
